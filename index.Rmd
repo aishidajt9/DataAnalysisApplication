@@ -1,6 +1,6 @@
 --- 
-title: "A Minimal Book Example"
-author: "John Doe"
+title: "2024データ分析（応用）"
+author: "石田　淳"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -11,7 +11,7 @@ description: |
   This is a minimal example of using the bookdown package to write a book.
   The HTML output format for this example is bookdown::gitbook,
   set in the _output.yml file.
-link-citations: yes
+link-citations: True
 github-repo: rstudio/bookdown-demo
 ---
 
