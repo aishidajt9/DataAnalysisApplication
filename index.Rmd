@@ -1,6 +1,6 @@
 --- 
 title: "2024データ分析（応用）"
-author: "石田　淳"
+author: "石田　淳(aishida@kwansei.ac.jp)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
