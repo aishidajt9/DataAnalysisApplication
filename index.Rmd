@@ -1,56 +1,140 @@
 --- 
 title: "2024データ分析（応用）"
-author: "石田　淳(aishida@kwansei.ac.jp)"
+author: "石田　淳 (aishida@kwansei.ac.jp)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib, packages.bib]
-# url: your book url like https://bookdown.org/yihui/bookdown
+url: https://aishidajt9.github.io/DataAnalysisApplication/
 # cover-image: path to the social sharing image like images/cover.jpg
 description: |
-  This is a minimal example of using the bookdown package to write a book.
-  The HTML output format for this example is bookdown::gitbook,
-  set in the _output.yml file.
+  a book for the lectuor of data analysis (application) at KGSOC
 link-citations: True
-github-repo: rstudio/bookdown-demo
+github-repo: aishidajt9/DataAnalysisApplication
 ---
 
-# About
+# イントロダクション
 
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports; for example, a math equation $a^2 + b^2 = c^2$.
+## 講義概要
 
-## Usage 
+* 目的：本講義では，社会調査データの分析で用いる基礎的な多変量解析法について、その基本的な考え方と主要な計量モデルを解説する。重回帰分析を基本としながら、応用として一般化線形モデルのなかからロジスティック回帰分析を取り上げ解説する．あわせてRによる分析実習を行う．
+* 到達目標：多変量解析，とくに重回帰分析の原理を理解すること．Rを用いて基本的な分析ができるようになること．
+* 授業方式：講義方式．一部Rによる演習を行う．
+* キーワード：多変量解析，回帰分析，R言語
 
-Each **bookdown** chapter is an .Rmd file, and each .Rmd file can contain one (and only one) chapter. A chapter *must* start with a first-level heading: `# A good chapter`, and can contain one (and only one) first-level heading.
+## 講義スケジュール
 
-Use second-level and higher headings within chapters like: `## A short section` or `### An even shorter section`.
+1. イントロダクション：今後の学習の方向付けを行う．多変量解析の基本的アイデアといくつかの応用例を紹介し，分析手法のイメージを持つ．あわせて，各自の持ち込みPC上でR言語のセットアップを行う
+2. 記述統計の復習：基本統計量や相関係数など，記述統計に関する基本的な知識を振り返る
+3. 推測統計の復習：標本分布，母平均の推定・検定，t検定など基本的な推測統計の知識を振り返る
+4. 線形代数の基礎(1)：多変量解析を理解する上で必要不可欠な線形代数を導入する．ベクトルの直交を理解することを目標とする．
+5. 線形代数の基礎(2)：引き続き線形代数の知識を導入する．行列演算と逆行列を理解することを目標とする．
+6. 単回帰分析(1)：まず，記述統計レベルで単回帰分析を導入する．最小二乗法を説明し，どのように回帰係数，決定係数を導くかを解説する．また，共分散・相関係数との関連を説明する．
+7. 単回帰分析(2)：確率モデルとしての単回帰モデルの仮定を説明し，回帰係数の標本分布を導く．回帰分析における推定・検定について説明する．
+8. 重回帰分析(1)：記述統計レベルで重回帰分析を導入する．重回帰における最小二乗法を説明し，偏回帰係数，決定係数を導き，その意味について説明する．
+9. 重回帰分析(2)：確率モデルとしての重回帰分析について解説する．重回帰分析における推定・検定について説明するとともに，多重共線性について解説する．
+10. 重回帰分析(3)：ダミー変数，交互作用項を導入したモデルについて解説する．
+11. ロジスティック回帰分析(1)：線形回帰モデルを拡張した一般化線形モデルのアイデアを導入する．そのうえでベルヌイ分布（二項分布）を仮定するロジスティック回帰を導入する．
+12. ロジスティック回帰分析(2)：引き続き，ロジスティック回帰分析について解説する．とくに係数とオッズ比の関連について説明する．
+13. 分析実習(1)：実習データを元に回帰分析をRで実行する．その際，自ら計算する場合と組み込み関数を使う場合を比較し，出力の読み方を学習する．
+14. 分析実習(2)：ひきつづき実習データを元にロジスティック回帰分析をRで実行する．その際，自ら計算する場合と組み込み関数を使う場合を比較し，出力の読み方を学習する．
 
-The `index.Rmd` file is required, and is also your first book chapter. It will be the homepage when you render the book.
+## 講義形式
+* 講義資料URL：https://aishidajt9.github.io/DataAnalysisApplication/
+  + 随時更新中
+* 参考図書：
+  + 永田靖・棟近雅彦，2001，『多変量解析法入門』サイエンス社，1～5章
+  + その他の参考図書は授業中に適宜紹介する
+* 成績評価：
+  + 講義中の小課題40
+  + 最終レポート60
+* その他注意点
+  + データ分析（入門），データ分析（基礎）の既修を前提とする
+  + BYODを前提とする（最新のWindows, macOSについて対応する，自分で対応できる場合はLinuxも可）
+  + 他の受講者の受講する権利を侵害する行為は厳禁．逸脱にはゼロトレランスで対応する．
 
-## Render book
+## デバイスのセットアップ
 
-You can render the HTML version of this example book without changing anything:
+### Terminal
 
-1. Find the **Build** pane in the RStudio IDE, and
+* コマンドラインでPC操作をするときに必要になる
+* mac: cmd+spaceでSpotlightを呼び出し”terminal”と検索
+* win: アプリ検索で”terminal”と検索
+* ショートカットですぐに呼び出せるようにしておこう
 
-1. Click on **Build Book**, then select your output format, or select "All formats" if you'd like to use multiple formats from the same book source files.
+### RとRStudioのセットアップ
 
-Or build the book from the R console:
+* R: https://www.r-project.org/ (-> download)
+* RStudio: https://posit.co/products/open-source/rstudio/ (-> download rstudio desktop)
+* macの場合，パッケージ管理ソフトhomebrew (https://brew.sh/)を導入して，そこからインストールしてもよい
+  + winの場合，wingetという管理ソフトがあるっちゃある
+* 参考情報：
+  + 瓜生真也「R言語入門 (R-4.3.3 2024年4月版) / introduction to r」https://speakerdeck.com/s_uryu/introduction-to-r
+  + 宋財泫・矢内勇生「私たちのR——ベストプラクティスの探求」https://www.jaysong.net/RBook/
 
-```{r, eval=FALSE}
-bookdown::render_book()
+### RStudioの設定
+
+* デフォルト・エンコーディングをUTF-8にする
+  + Tools → Global options → Code → Saving → Default text encoding
+* 日本語で書かれたファイルを読み込むと文字化けしている可能性がある．その場合以下を試してみる．
+  + File  reopen with encoding -> CP932 or SHIFT-JISを選択
+  + File -> reopen with encoding -> UTF-8を選択
+* 見た目を変える
+  + Tools → Global options → Appearance
+* General → Basic → Save workspace to .RData on exitをNeverに
+
+### プロジェクトファイルの作成
+
+* ローカルのわかりやすい場所に，R作業用フォルダを作成する（フォルダ名は半角）
+* RStudioを立ち上げ，Project → New Project → Existing Directory → つくったフォルダを選択
+* 以降は，”フォルダ名.Rproj”ファイルをクリックして，Rセッションを始める
+  + 前回開いていたファイルが記憶される
+  + ディレクトリの設定をいちいちしなくてよい
+
+### 試しにやってみよう
+* "test.R"と名前をつけて保存
+
+``` {r eval=FALSE}
+5 + 3
+5 - 3
+5 / 3
+5 ^ 3
+5 * (10 - 3)
+sqrt(4)
+
+a <- 10
+a
+a / 2
+
+## 組み込みデータ
+cars
+
+## スピードの度数分布
+table(cars$speed)
+
+## スピードのヒストグラム
+hist(cars$speed)
 ```
 
-To render this example to PDF as a `bookdown::pdf_book`, you'll need to install XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.org/tinytex/>.
+### tidyverseのインストール
 
-## Preview book
+* モダンRに必須のパッケージ群のバンドル．データ操作，ヴィジュアライゼーション
+* `install.packages(‘tidyverse‘)`
+  + macの場合Xcode，winの場合Rtoolsを別にインストールする必要があるかもしれない
 
-As you work, you may start a local server to live preview this HTML book. This preview will update as you edit the book when you save individual .Rmd files. You can start the server in a work session by using the RStudio add-in "Preview book", or from the R console:
+``` {r eval=FALSE}
+library(tidyverse)
 
-```{r eval=FALSE}
-bookdown::serve_book()
+iris %>% 
+  select(Sepal.Length, Sepal.Width, Species) %>% 
+  ggplot(aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point() +
+  geom_smooth(method="lm")
 ```
 
+## 本日の課題
+
+* test.RをLUNA課題から提出
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
