@@ -72,3 +72,19 @@ git push origin main    # リモートリポジトリに反映
 - `tidyverse` 
 - `gganimate`
 - `rgl`
+
+## Claude Code カスタムコマンド
+
+### /publish コマンド
+プロジェクトディレクトリで以下を実行：
+```
+/publish [オプション：コミットメッセージ]
+```
+
+このコマンドで以下が一括実行されます：
+1. `bookdown::render_book()` でレンダリング
+2. 変更をgitにコミット（タイムスタンプ付きまたは指定メッセージ）
+3. ソースリポジトリにプッシュ
+4. GitHub Pagesリポジトリにもプッシュ
+
+コマンドファイル: `.claude/commands/publish.md`
