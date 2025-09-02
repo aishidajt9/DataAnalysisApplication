@@ -45,3 +45,30 @@ bookdown::render_book()
 - ビルド成果物（`_bookdown_files/`, `_main_files/`）
 - R履歴ファイル（`.Rhistory`）
 - 一時ファイル（`tmp.R`）
+
+## 一連の公開作業手順
+
+### 1. レンダリング
+```r
+bookdown::render_book()
+```
+- 全ての.Rmdファイルが処理され、GitHubPages用ディレクトリに出力される
+- 出力先: `../aishidajt9.github.io/DataAnalysisApplication/`
+
+### 2. Git管理
+```bash
+git status              # 変更状況確認
+git add .               # 全変更をステージング
+git commit -m "コミットメッセージ"  # 変更をコミット
+git push origin main    # リモートリポジトリに反映
+```
+
+### 3. ウェブサイト確認
+- GitHubPagesが自動更新される
+- URL: https://aishidajt9.github.io/DataAnalysisApplication/
+
+### 必要なRパッケージ
+- `bookdown`
+- `tidyverse` 
+- `gganimate`
+- `rgl`
