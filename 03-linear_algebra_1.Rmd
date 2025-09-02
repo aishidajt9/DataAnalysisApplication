@@ -1,0 +1,324 @@
+# 線形代数の基礎(1)
+
+高度な統計手法，データサイエンスの方法をさらに学ぶためには，線形代数の知識が必須になる．最初に初歩レベルのベクトルの知識と計算方法を導入し，共分散・相関係数といった統計概念との関連を示す．
+
+## ベクトルの基本
+
+$n$個の数$a_1, a_2, \cdots, a_n$を順番に縦に並べたものを$n$次元**（列）ベクトル**((column) vector)といって，
+$$
+\begin{align}
+	\mathbf{a} = \left[
+		\begin{array}{c}
+      a_1 \\
+      a_2 \\
+      \vdots \\
+      a_n
+    \end{array}
+	\right]
+\end{align}
+$$
+と表す．ベクトルには要素の順番に意味があるので，順番が入れ替わると一般に異なるベクトルになる．
+
+列ベクトルを横に倒したものを行ベクトル(row vector)という．行と列を入れ替える操作を**転置**(transpose)といって$\mathbf{a}^\mathrm{T}$で表す．すわなち，
+$$
+\begin{align}
+	\mathbf{a}^\mathrm{T} = [a_1\ a_2\ \cdots\ a_n].
+\end{align}
+$$
+
+## ベクトルの演算
+
+2つの$n$次元列ベクトル
+$$
+\begin{align}
+	\mathbf{a} = \left[
+		\begin{array}{c}
+      a_1 \\
+      a_2 \\
+      \vdots \\
+      a_n
+    \end{array}
+	\right], \qquad \mathbf{b} = \left[
+		\begin{array}{c}
+      b_1 \\
+      b_2 \\
+      \vdots \\
+      b_n
+    \end{array}
+	\right]
+\end{align}
+$$
+は，すべての$i$番目の要素が等しいとき，つまり，
+$$
+\begin{align}
+	\forall i \in \{1,2,\cdots,n\},\quad a_i=b_i
+\end{align}
+$$
+のとき，そのときに限り等しいとする．
+
+
+すべての要素が0であるベクトルを**零ベクトル**(zero vector)といって
+$$
+\begin{align}
+	\mathbf{0} = \left[
+		\begin{array}{c}
+      0 \\
+      0 \\
+      \vdots \\
+      0
+    \end{array}
+	\right]
+\end{align}
+$$
+と表す．
+
+2つの$n$次元列ベクトル$\mathbf{a}, \mathbf{b}$の和は
+$$
+\begin{align}
+	\mathbf{a} + \mathbf{b} = \left[
+		\begin{array}{c}
+      a_1 \\
+      a_2 \\
+      \vdots \\
+      a_n
+    \end{array}
+	\right] + \left[
+		\begin{array}{c}
+      b_1 \\
+      b_2 \\
+      \vdots \\
+      b_n
+    \end{array}
+	\right] =  \left[
+		\begin{array}{c}
+      a_1 + b_1 \\
+      a_2 + b_2\\
+      \vdots \\
+      a_n + b_n
+    \end{array}
+	\right]
+\end{align}
+$$
+であり，$n$次元列ベクトル$\mathbf{a}$とスカラー$\alpha$の積（スカラー倍）は，
+$$
+\begin{align}
+	\alpha \mathbf{a} = \alpha \left[
+		\begin{array}{c}
+      a_1 \\
+      a_2 \\
+      \vdots \\
+      a_n
+    \end{array}
+	\right] = \left[
+		\begin{array}{c}
+      \alpha a_1 \\
+      \alpha a_2 \\
+      \vdots \\
+      \alpha a_n
+    \end{array}
+	\right]
+\end{align}
+$$
+である．ここから，2つの$n$次元列ベクトル$\mathbf{a}, \mathbf{b}$の差は
+$$
+\begin{align}
+	\mathbf{a} - \mathbf{b} = \left[
+		\begin{array}{c}
+      a_1 \\
+      a_2 \\
+      \vdots \\
+      a_n
+    \end{array}
+	\right] + (-1) \left[
+		\begin{array}{c}
+      b_1 \\
+      b_2 \\
+      \vdots \\
+      b_n
+    \end{array}
+	\right] =  \left[
+		\begin{array}{c}
+      a_1 - b_1 \\
+      a_2 - b_2\\
+      \vdots \\
+      a_n - b_n
+    \end{array}
+	\right]
+\end{align}
+$$
+となる．
+
+ベクトルのスカラー倍と和について，以下の法則が成り立つ．
+
+1. **交換法則**
+$$
+\begin{align}
+    \mathbf{a} + \mathbf{b} = \mathbf{b} + \mathbf{a}
+\end{align}
+$$
+2. **結合法則**
+$$
+\begin{align}
+(\mathbf{a} + \mathbf{b}) + \mathbf{c} = \mathbf{a} + (\mathbf{b} + \mathbf{c})
+\end{align}
+$$
+3. **分配法則1**
+$$
+\begin{align}
+(\alpha_1 + \alpha_2) \mathbf{a} = \alpha_1 \mathbf{a} + \alpha_2 \mathbf{a}
+\end{align}
+$$
+4. **分配法則2**
+$$
+\begin{align}
+    \alpha (\mathbf{a} + \mathbf{b}) = \alpha \mathbf{a} + \alpha \mathbf{b}
+\end{align}
+$$
+
+いくつかのベクトル（たとえば，$\mathbf{a}, \mathbf{b}, \mathbf{c}$）について，スカラー倍したベクトルの和（たとえば，$\mathbf{d} = \alpha \mathbf{a} + \beta \mathbf{b} + \gamma \mathbf{c}$）からなるベクトルをベクトルの一次結合もしくは**線形結合**(linear combination)という．
+
+以下，Rでベクトル演算を行う．Rでベクトルを表現する場合は`c()`を用いる．列ベクトルと行ベクトルの区別はない（あとで導入する行列オブジェクト`matrix()`を用いて列・行ベクトルを表現することは可能である）．
+
+```{r}
+a <- c(2, 1, 4)
+b <- c(5, 4, -5)
+c <- c(3, 2, 1)
+
+a + 3 * b
+a - b + 2 * c
+4 * a + 2 * b - 6 * c
+```
+
+
+## 内積とノルム
+
+### 定義
+
+2つの$n$次元ベクトル$\mathbf{a}, \mathbf{b}$の**内積**(inner product)を
+$$
+\begin{align}
+	\mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^n a_i b_i = a_1 b_1 + a_2 b_2 + \cdots + a_n b_n
+\end{align}
+$$
+と定義する．定義より以下の法則が成り立つ．
+
+1. **交換法則**
+$$
+\begin{align}
+    \mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot  \mathbf{a}
+\end{align}
+$$
+2. **分配法則**
+$$
+\begin{align}
+(\mathbf{a} + \mathbf{b}) \cdot \mathbf{c} = \mathbf{a} \cdot \mathbf{c} + \mathbf{b} \cdot \mathbf{c}
+\end{align}
+$$
+3. **定数倍**
+$$
+\begin{align}
+    (\alpha \mathbf{a}) \cdot \mathbf{b} = \alpha (\mathbf{a} \cdot \mathbf{b})
+\end{align}
+$$
+
+$n$次元ベクトル$\mathbf{a}$について自分自身との内積の正の平方根を**ノルム**(norm)といって
+$$
+\begin{align}
+	\|\mathbf{a}\|= \sqrt{\mathbf{a} \cdot \mathbf{a}} = \sqrt{\sum_{i=1}^n a_i^2} = \sqrt{a_1^2 + a_2^2 +\cdots + a_n^2}
+\end{align}
+$$
+と表す．幾何学的にはノルムは原点からベクトル$\mathbf{a}$に対応する点までのユークリッド距離を表す．
+
+## 幾何学的意味
+
+ベクトル$\mathbf{a}, \mathbf{b}$のなす角を$\theta$とすると，余弦定理によって，
+$$
+\begin{align}\label{eq:cos}
+	\mathbf{a}\cdot \mathbf{b} = \|\mathbf{a}\|\|\mathbf{b}\|\cos \theta
+\end{align}
+$$
+となる．ここから，ただちに次のことが分かる．$\mathbf{a}, \mathbf{b}$のノルムを所与としたとき，$\mathbf{a}, \mathbf{b}$のなす角が直角であるとき$\cos (\pi/2) = 0$なので内積も0である．これを**直交**(orthogonal)という．この概念は高度な統計解析を理解する際に重要となる．
+
+直交の状態から$\mathbf{b}$が$\mathbf{a}$に近づき同じ方向に向くほどプラスに大きくなり，同一線上で同じ方向を向いているとき最大となる．逆に反対方向に向くほどマイナスに小さな値になり，同一線上で反対方向を向いているとき最少になる．
+
+Rで内積を計算する場合は`%*%`演算子を用いる．出力は1x1行列である．
+```{r}
+a %*% b
+sum(a * b)
+b %*% c
+c(1, 0, 0) %*% c(0, 1, 0)
+```
+
+
+## 共分散と相関係数のベクトルによる理解
+
+2変数の$n$個のデータ$x_1, x_2, \cdots, x_n, y_1, y_2, \cdots, y_n$について，それぞれの値の平均値を$\bar{x}, \bar{y}$としたとき，各要素と平均の差で構成されるベクトル$\mathbf{x}, \mathbf{y}$を考える（この処理をセンタリングということがある）．すなわち，
+$$
+\begin{align}
+	\mathbf{x} = \left[
+		\begin{array}{c}
+      x_1 - \bar{x} \\
+      x_2 - \bar{x} \\
+      \vdots \\
+      x_n - \bar{x}
+    \end{array}
+	\right], \qquad \mathbf{y} = \left[
+		\begin{array}{c}
+      y_1 - \bar{y} \\
+      y_2 - \bar{y} \\
+      \vdots \\
+      y_n - \bar{y}
+    \end{array}
+	\right].
+\end{align}
+$$
+
+このとき，$\mathbf{x}, \mathbf{y}$のそれぞれのノルムは，
+$$
+\begin{align}
+	\|\mathbf{x}\|= \sqrt{\sum_{i=1}^n (x_i - \bar{x})^2} = \sqrt{n}s_x,\qquad \|\mathbf{y}\|= \sqrt{\sum_{i=1}^n (y_i - \bar{y})^2} = \sqrt{n}s_y
+\end{align}
+$$
+となるので，それぞれの変数の標準偏差の$\sqrt{n}$倍である（Rの`sd()`の場合は$\sqrt{n-1}$倍）．
+
+```{r}
+x <- c(152.8, 150.1, 182.0, 163.2, 167.3, 160.2, 164.9, 161.4, 179.9, 172.2)
+y <- c(56.3, 52.1, 85.6, 66.8, 74.2, 58.1, 61.9, 55.1, 70.5, 64.1)
+x_cen <- x -mean(x)
+y_cen <- y -mean(y)
+
+sqrt(x_cen %*% x_cen)
+sd(x) * sqrt(length(x) - 1)
+```
+
+
+また，$\mathbf{x}, \mathbf{y}$の内積は
+$$
+\begin{align}
+	\mathbf{x} \cdot \mathbf{y} = \sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}) = n s_{xy}
+\end{align}
+$$
+であるので，共分散の$n$倍になる（Rの`cov()`の場合は$n-1$倍）．
+
+```{r}
+x_cen %*% y_cen
+cov(x, y) * (length(x) - 1)
+```
+
+最後に，内積をそれぞれのノルムを掛けたもので割れば$\cos\theta$になるので，
+$$
+\begin{align}
+	\cos\theta = \frac{\mathbf{x} \cdot \mathbf{y}}{\|\mathbf{x}\|\|\mathbf{y}\|} = \frac{n s_{xy}}{\sqrt{n}s_x\sqrt{n}s_y} = r_{xy}
+\end{align}
+$$
+つまり，変数$x$と$y$の相関係数は，ベクトル$\mathbf{x}$の$\mathbf{y}$のなす角の余弦と見なすことができる．
+
+```{r}
+x_cen %*% y_cen / (sqrt(x_cen %*% x_cen) * sqrt(y_cen %*% y_cen))
+cor(x, y)
+```
+
+
+## 本日の課題
+
+Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出

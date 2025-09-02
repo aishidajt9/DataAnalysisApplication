@@ -36,18 +36,18 @@ github-repo: aishidajt9/DataAnalysisApplication
 10. 重回帰分析(3)：ダミー変数，交互作用項を導入したモデルについて解説する．
 11. ロジスティック回帰分析(1)：線形回帰モデルを拡張した一般化線形モデルのアイデアを導入する．そのうえでベルヌイ分布（二項分布）を仮定するロジスティック回帰を導入する．
 12. ロジスティック回帰分析(2)：引き続き，ロジスティック回帰分析について解説する．とくに係数とオッズ比の関連について説明する．
-13. 分析実習(1)：実習データを元に回帰分析をRで実行する．その際，自ら計算する場合と組み込み関数を使う場合を比較し，出力の読み方を学習する．
-14. 分析実習(2)：ひきつづき実習データを元にロジスティック回帰分析をRで実行する．その際，自ら計算する場合と組み込み関数を使う場合を比較し，出力の読み方を学習する．
+13. レポート分析実習(1)：最終レポートのための分析とレポート作りを各自が行う．
+14. レポート分析実習(2)：最終レポートのための分析とレポート作りを各自が行う．
 
 ## 講義形式
-* 講義資料URL：https://aishidajt9.github.io/DataAnalysisApplication/
-  + 随時更新中
+* 講義資料URL：<https://aishidajt9.github.io/DataAnalysisApplication/>
+  + 授業期間中にも必要に応じて更新する
 * 参考図書：
   + 永田靖・棟近雅彦，2001，『多変量解析法入門』サイエンス社，1～5章
   + その他の参考図書は授業中に適宜紹介する
 * 成績評価：
-  + 講義中の小課題40
-  + 最終レポート60
+  + 講義中の小課題50
+  + 最終レポート50
 * その他注意点
   + データ分析（入門），データ分析（基礎）の既修を前提とする
   + BYODを前提とする（最新のWindows, macOSについて対応する，自分で対応できる場合はLinuxも可）
@@ -64,13 +64,16 @@ github-repo: aishidajt9/DataAnalysisApplication
 
 ### RとRStudioのセットアップ
 
-* R: https://www.r-project.org/ (-> download)
-* RStudio: https://posit.co/products/open-source/rstudio/ (-> download rstudio desktop)
-* macの場合，パッケージ管理ソフトhomebrew (https://brew.sh/)を導入して，そこからインストールしてもよい
+* R: <https://www.r-project.org/> (-> download)
+* RStudio: <https://posit.co/products/open-source/rstudio/> (-> download rstudio desktop)
+* macの場合，パッケージ管理ソフトhomebrew (<https://brew.sh/>) を導入して，そこからインストールしてもよい
   + winの場合，wingetという管理ソフトがあるっちゃある
 * 参考情報：
-  + 瓜生真也「R言語入門 (R-4.3.3 2024年4月版) / introduction to r」https://speakerdeck.com/s_uryu/introduction-to-r
-  + 宋財泫・矢内勇生「私たちのR——ベストプラクティスの探求」https://www.jaysong.net/RBook/
+  + 瓜生真也「R言語入門 (R-4.3.3 2024年4月版) / introduction to r」<https://speakerdeck.com/s_uryu/introduction-to-r>
+  + 宋財泫・矢内勇生「私たちのR——ベストプラクティスの探求」<https://www.jaysong.net/RBook/>
+* webベースでRを使ってみたい場合，現在では2つの選択肢をすすめます．ただしこの授業ではローカルへのインストールを前提とします．
+  + webR: <https://docs.r-wasm.org/webr/latest/>
+  + Google colab: <https://colab.research.google.com/> (ランタイムのタイプをRに変更)
 
 ### RStudioの設定
 

@@ -1,0 +1,159 @@
+# 重回帰分析(3)
+
+ダミー変数を入れたモデル，交互作用モデルについて理解する．
+
+## 具体例
+
+以下のよう散布図データを考える．単純に単回帰分析を行うと以下のようになる．
+
+```{r message=FALSE, warnings=FALSE}
+library(tidyverse)
+set.seed(8931)
+
+tibble(
+  x = runif(100, 0, 50),
+  y = rnorm(100, 2 * x + 10, 10),
+  d = rep(0, 100)
+  ) %>%
+  bind_rows(
+    tibble(
+      x = runif(100, 0, 50),
+      y = rnorm(100, x + 50, 10),
+      d = rep(1, 100)
+    )
+  ) -> data
+
+data %>%
+  ggplot(aes(x=x, y=y)) +
+  geom_point() +
+  geom_smooth(method="lm", fill=NA, lwd=1.5, fullrange=TRUE) +
+  theme_classic()
+```
+
+$$
+Y = \beta_0 + \beta_1 x + \varepsilon,\quad \varepsilon \sim N(0, \sigma^2)
+$$
+
+```{r}
+data %>%
+  with(lm(y ~ x)) %>%
+  summary()
+```
+
+まあ，これでもよさそうではある．
+
+## ダミー変数を投入したモデル 
+
+しかし，データの構造を精査すると，背後に何らかの特性のカテゴリー（グループ）の違いがあって，カテゴリーの違いが一部$Y$の違いを生み出しているかもしれない．たとえば，年収を年齢に回帰させるモデルを考える場合，そもそも性別で年収の平均値が異なっていると考えるのは，経験的には理に適っている．
+
+そこで，母集団がある特性について2つの排反なカテゴリーにわかれるとき，その所属を識別する変数として**ダミー変数**(dummy variable)$d$を導入する．それらのカテゴリーの一方（たとえば性別でいう女性）にあてはまるとき$d=1$，もう一方（たとえば男性）にあてはまるときは$d=0$とする．これによって2つのカテゴリーの違いをモデルに組み込むことができる．
+
+ちなみに，一般的に$n\geq 2$以上のカテゴリーに分かれる場合，$n-1$個のダミー変数を用意すれば十分である．たとえば，「松竹梅」という3区分があるとき，$d_松, d_竹$という2つのダミー変数を用意する．このとき，
+$$
+\begin{align}
+  松:\ & d_松 = 1, d_竹 = 0 \\
+  竹:\ & d_松 = 0, d_竹 = 1 \\
+  梅:\ & d_松 = 0, d_竹 = 0 \\
+\end{align}
+$$
+と表すことができる．この場合の「梅」は**基準カテゴリー**(reference category)と言われる．
+
+Rの場合，`factor`変数を`lm`に投入すれば自動的に必要なダミー変数を作ってくれる．このとき，レベルの一番最初のカテゴリーが基準カテゴリーとなる．
+
+以下，ダミー変数が1つの場合を説明する．ダミー変数を投入したモデルは以下のようになる．
+$$
+Y = \beta_0 + \beta_1 x + \beta_2 d + \varepsilon,\quad \varepsilon \sim N(0, \sigma^2)
+$$
+ここで，$d=0,1$を代入すると以下のようになる（誤差項は省略）．
+$$
+\begin{align}
+  d = 0 :\ & Y = \beta_0 + \beta_1 x \\
+  d = 1 :\ & Y = (\beta_0 + \beta_2) + \beta_1 x \\
+\end{align}
+$$
+つまり，$\beta_0$は$d = 0$のカテゴリー（たとえば男性）に対応した切片，$\beta_2$は$d = 1$のカテゴリー（たとえば女性）に対応した切片の増分を示す．つまり，$\beta_2$は$d = 0$の基準カテゴリーと比べて，$d = 1$の時の切片がどれくらい大きいか（小さいか）を示している．このモデルでは傾きはカテゴリー共通で切片のみが変わることに注意せよ．
+
+```{r}
+data %>%
+  with(lm(y ~ x + d)) -> lm_dummy
+b_d <- lm_dummy$coefficients
+lm_dummy %>% summary()
+```
+
+$$
+\hat{Y} = 20.45 + 1.54 * x + 17.97 * d
+$$
+ここから，$d=0$の時の切片は20.45，$d=1$の時の切片は$20.45 + 17.97 = 38.42$と推測されていることがわかる．
+
+```{r}
+data %>%
+  ggplot(aes(x=x, y=y, color=factor(d))) +
+  geom_point() +
+  geom_function(fun = function(x) b_d[1] + b_d[2] * x,
+    color = "#F8766D", lwd=1.5) +
+  geom_function(fun = function(x) b_d[1] + b_d[3] + b_d[2] * x,
+    color = "#00BFC4", lwd=1.5) +
+  theme_classic()
+```
+
+## 交互作用モデル
+
+ダミー変数を投入したモデルは，切片だけが動くモデルであったが，カテゴリーに応じて傾き$x$と$y$の関連性も変わるケースがある．性別と年齢・年収で言えば，年収の基礎的な値が変わるだけではなく，年齢に応じた年収の上がり方も性別で異なるような場合である．こうした違いを表現するために**交互作用項**(intersection term)を投入したモデルを考える．
+
+$$
+Y = \beta_0 + \beta_1 x + \beta_2 d + \beta_3 x d+ \varepsilon,\quad \varepsilon \sim N(0, \sigma^2)
+$$
+ここで，$d=0,1$を代入すると以下のようになる（誤差項は省略）．
+$$
+\begin{align}
+  d = 0 :\ & Y = \beta_0 + \beta_1 x \\
+  d = 1 :\ & Y = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) x \\
+\end{align}
+$$
+$\beta_2$による切片の増分の表現に加えて，以下が示される．$\beta_1$は$d = 0$のカテゴリー（たとえば男性）に対応した傾き，$\beta_3$は$d = 1$のカテゴリー（たとえば女性）に対応した傾きの増分を示す．つまり，$\beta_3$は$d = 0$の基準カテゴリーと比べて，$d = 1$の時の傾きがどれくらい大きいか（小さいか）を示している．このモデルでは切片・傾きともにカテゴリーに応じて変わることに注意せよ（ちなみに，切片共通で傾きのみ変わるモデルも考えられるが，ここでは取り上げない）．
+
+Rの`lm`では，交互作用モデルは`y ~ x * d`もしくは`y ~ x + d + x:d`と表現する．
+
+```{r}
+data %>%
+  with(lm(y ~ x * d)) -> lm_intsec
+b_i <- lm_intsec$coefficients
+lm_intsec %>% summary()
+```
+
+$$
+\hat{Y} = 9.87 + 1.96 * x + 39.66 * d - 0.92 * x * d
+$$
+
+$$
+\begin{align}
+  d = 0 :\ & Y = 9.87 + 1.96 * x \\
+  d = 1 :\ & Y = 49.53 + 1.04 * x \\
+\end{align}
+$$
+
+もとの理論的構造をほぼ推定できている．また自由度調整済み決定係数も上昇している．
+
+```{r}
+data %>%
+  ggplot(aes(x=x, y=y, color=factor(d))) +
+  geom_point() +
+  geom_function(fun = function(x) b_i[1] + b_i[2] * x,
+    color = "#F8766D", lwd=1.5) +
+  geom_function(fun = function(x) b_i[1] + b_i[3] + (b_i[2] + b_i[4]) * x,
+    color = "#00BFC4", lwd=1.5) +
+  theme_classic()
+```
+
+上のグラフは以下のように`ggplot`の`geom_smooth`でも直接書ける．
+
+```{r eval=FALSE}
+data %>%
+  ggplot(aes(x=x, y=y, color=factor(d))) +
+  geom_point() +
+  geom_smooth(method="lm", fill=NA, lwd=1.5, fullrange=TRUE) +
+  theme_classic()
+```
+## 本日の課題
+
+仮想データのパラメータの設定を変えて，Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出

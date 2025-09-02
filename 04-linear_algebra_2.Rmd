@@ -1,0 +1,469 @@
+# 線形代数の基礎(2)
+
+行列についての初歩的知識を導入する．最終的には分散共分散行列の理解を目指す．
+
+## 行列の基本
+
+$m\times n$個の数$a_{11}, a_{12}, \cdots, a_{1n}, a_{21}, a_{22}, \cdots, a_{2n}, a_{m1}, a_{m2}, \cdots, a_{mn}$を順番に並べたものを$m\times n$次元**行列**(matrix)といって，
+$$
+\begin{align}
+	\mathbf{A} = \left[
+		\begin{array}{cccc}
+      a_{11} & a_{12} & \cdots & a_{1n} \\
+      a_{21} & a_{22} & \cdots & a_{2n} \\
+      \vdots & \vdots & & \vdots\\
+      a_{m1} & a_{m2} & \cdots & a_{mn}
+    \end{array}
+	\right]
+\end{align}
+$$
+と表す．行列は一般的にアルファベットの大文字で表し，その要素（成分）は添え字つきのアルファベットの小文字で表す．ここでは，行列をアルファベットの太字の大文字で表す．行列の横方向の配列が**行**(row)で上から第1行などと数える．縦方向の配列が**列**(columun)で左から第1列などと数える．
+
+社会学などで普通扱うクロスセクショナル・データを行列で表すと，行がケース（回答者）で列が変数を表すことが一般的である．このようなデータ形式を**整然データ**(tidy data)という (Hadley Wickham \& Garrett Grolemund, *R for Data Science*, <https://r4ds.had.co.nz/>)．
+
+行列はまた
+$$
+\begin{align}
+	\mathbf{A} = [\mathbf{a}_1\ \mathbf{a}_2\ \cdots \ \mathbf{a}_n], \qquad \mathbf{a}_j = \left[
+		\begin{array}{c}
+      a_{1j} \\
+      a_{2j} \\
+      \vdots \\
+      a_{mj}
+    \end{array}
+	\right]
+\end{align}
+$$
+というように，列ベクトルを並べた行ベクトルと見なすことができる．逆に，行ベクトルを並べた列ベクトルと見なすこともできる．
+
+行列の行と列を入れ替える操作を**転置**(transpose)といって$\mathbf{A}^\mathrm{T}$で表す．すわなち，
+$$
+\begin{align}
+	\mathbf{A} &= [\mathbf{a}_1\ \mathbf{a}_2\ \cdots \ \mathbf{a}_n] =
+	\left[
+		\begin{array}{cccc}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{array}
+	\right], \\
+	\mathbf{A}^\mathrm{T} &=  \left[
+		\begin{array}{c}
+      \mathbf{a}_1^\mathrm{T} \\
+      \mathbf{a}_2^\mathrm{T} \\
+      \vdots \\
+      \mathbf{a}_n^\mathrm{T}
+    \end{array}
+	\right] =
+	\left[
+		\begin{array}{cccc}
+			a_{11} & a_{21} & \cdots & a_{m1} \\
+			a_{12} & a_{22} & \cdots & a_{m2} \\
+			\vdots & \vdots & & \vdots\\
+			a_{1n} & a_{2n} & \cdots & a_{mn}
+		\end{array}
+	\right]
+\end{align}
+$$
+である．ここで$m\times n$行列を転置すると$n\times m$行列になり，行数と列数が入れ替わることに注意すること．
+
+## 行列の演算
+
+2つの$m\times n$次元行列$\mathbf{A}=[a_{ij}], \mathbf{B}=[b_{ij}]$は，すべての$ij$番目の要素が等しいとき，つまり，
+$$
+\begin{align}
+	\forall i \in \{1,2,\cdots,n\}, \forall j \in \{1,2,\cdots,m\},\quad a_{ij}=b_{ij}
+\end{align}
+$$
+のとき，そのときに限り等しいとする．
+
+すべての要素が0である行列を**零行列**(zero matrix)といって
+$$
+\begin{align}
+	\mathbf{O} = \left[
+		\begin{array}{cccc}
+      0 & 0 & \cdots & 0 \\
+      0 & 0 & \cdots & 0 \\
+      \vdots & \vdots & & \vdots\\
+      0 & 0 & \cdots & 0
+    \end{array}
+	\right]
+\end{align}
+$$
+と表す．とくに行数列数を明示するときは$\mathbf{O}_{m\times n}$などと表す．
+
+行数$m$と列数$n$が等しい行列を**正方行列**(square matrix)という．$n\times n$次元正方行列のなかでも，行列の対角要素$a_{ii}$が1で非対角要素$a_{ij} (i\neq j)$が0の行列を$n\times n$次元**単位行列**(identity matrix)と呼ばれ
+$$
+\begin{align}
+	\mathbf{I} = \left[
+		\begin{array}{cccc}
+      1 & 0 & \cdots & 0 \\
+      0 & 1 & \cdots & 0 \\
+      \vdots & \vdots & & \vdots\\
+      0 & 0 & \cdots & 1
+    \end{array}
+	\right]
+\end{align}
+$$
+と表す．とくに次元数を明示するときは$\mathbf{I}_{n}$と表す．
+
+2つの$m\times n$次元行列$\mathbf{A}=[a_{ij}], \mathbf{B}=[b_{ij}]$の和は
+$$
+\begin{align}
+	\mathbf{A} + \mathbf{B} &= \left[
+		\begin{array}{cccc}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{array}
+	\right] + \left[
+		\begin{array}{cccc}
+			b_{11} & b_{12} & \cdots & b_{1n} \\
+			b_{21} & b_{22} & \cdots & b_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			b_{m1} & b_{m2} & \cdots & b_{mn}
+		\end{array}
+	\right] \nonumber \\
+	&=  \left[
+		\begin{array}{cccc}
+			a_{11} + b_{11} & a_{12} + b_{12} & \cdots & a_{1n} + b_{1n} \\
+			a_{21} + b_{21} & a_{22} + b_{22} & \cdots & a_{2n} + b_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} + b_{m1} & a_{m2} + b_{m2} & \cdots & a_{mn} + b_{mn}
+    \end{array}
+	\right]
+\end{align}
+$$
+であり，$m\times n$次元行列$\mathbf{A}=[a_{ij}]$とスカラー$\alpha$の積（スカラー倍）は，
+$$
+\begin{align}
+	\alpha \mathbf{A} = \left[
+		\begin{array}{cccc}
+			\alpha a_{11} & \alpha a_{12} & \cdots & \alpha a_{1n} \\
+			\alpha a_{21} & \alpha a_{22} & \cdots & \alpha a_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			\alpha a_{m1} & \alpha a_{m2} & \cdots & \alpha a_{mn}
+		\end{array}
+	\right]
+\end{align}
+$$
+である．ここから，2つの$m\times n$次元行列$\mathbf{A}=[a_{ij}], \mathbf{B}=[b_{ij}]$の差は
+$$
+\begin{align}
+	\mathbf{A} - \mathbf{B} &= \left[
+		\begin{array}{cccc}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{array}
+	\right] + (-1) \left[
+		\begin{array}{cccc}
+			b_{11} & b_{12} & \cdots & b_{1n} \\
+			b_{21} & b_{22} & \cdots & b_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			b_{m1} & b_{m2} & \cdots & b_{mn}
+		\end{array}
+	\right] \nonumber \\
+	&=  \left[
+		\begin{array}{cccc}
+			a_{11} - b_{11} & a_{12} - b_{12} & \cdots & a_{1n} - b_{1n} \\
+			a_{21} - b_{21} & a_{22} - b_{22} & \cdots & a_{2n} - b_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} - b_{m1} & a_{m2} - b_{m2} & \cdots & a_{mn} - b_{mn}
+    \end{array}
+	\right]
+\end{align}
+$$
+となる．
+
+ベクトルと同じく行列のスカラー倍と和について，以下の法則が成り立つ．
+
+
+1. **交換法則**
+$$
+\begin{align}
+    \mathbf{A} + \mathbf{B} = \mathbf{B} + \mathbf{A}
+\end{align}
+$$
+2. **結合法則**
+$$
+\begin{align}
+(\mathbf{A} + \mathbf{B}) + \mathbf{C} = \mathbf{A} + (\mathbf{B} + \mathbf{C})
+\end{align}
+$$
+3. **分配法則1**
+$$
+\begin{align}
+(\alpha_1 + \alpha_2) \mathbf{A} = \alpha_1 \mathbf{A} + \alpha_2 \mathbf{A}
+\end{align}
+$$
+4. **分配法則2**
+$$
+\begin{align}
+    \alpha (\mathbf{A} + \mathbf{B}) = \alpha \mathbf{A} + \alpha \mathbf{B}
+\end{align}
+$$
+
+Rで行列は`matrix()`を用いて定義する．引数のベクトルを1列目から順に列方向に並べていく．
+
+```{r}
+A <- matrix(c(2, 4, 1, -6, -3, 5), nrow = 2, ncol = 3)
+A
+B <- matrix(c(1, 3, 3, 0, 4, -1), nrow = 2, ncol = 3)
+B
+A + B
+A - B
+3 * A
+2 * A + 3 * B
+```
+
+## 行列の積
+
+行列の積は$m\times n$次元の行列$\mathbf{A}$と$n\times p$次元の行列$\mathbf{B}$の間で定義され，
+$$
+\begin{align}
+	\mathbf{A}\mathbf{B} &= \left[
+		\begin{array}{cccc}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & & \vdots\\
+			a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{array}
+	\right]\left[
+		\begin{array}{cccc}
+			b_{11} & b_{12} & \cdots & b_{1p} \\
+			b_{21} & b_{22} & \cdots & b_{2p} \\
+			\vdots & \vdots & & \vdots\\
+			b_{n1} & b_{n2} & \cdots & b_{np}
+		\end{array}
+	\right] \nonumber \\
+	&= \left[
+		\begin{array}{cccc}
+			\sum_{k=1}^n a_{1k}b_{k1} & \sum_{k=1}^n a_{1k}b_{k2} & \cdots & \sum_{k=1}^n a_{1k}b_{kp} \\
+			\sum_{k=1}^n a_{2k}b_{k1} & \sum_{k=1}^n a_{2k}b_{k2} & \cdots & \sum_{k=1}^n a_{2k}b_{kp} \\			\vdots & \vdots & & \vdots\\
+			\sum_{k=1}^n a_{mk}b_{k1} & \sum_{k=1}^n a_{mk}b_{k2} & \cdots & \sum_{k=1}^n a_{mk}b_{kp}
+    \end{array}
+	\right]
+\end{align}
+$$
+となる．行列の積$\mathbf{A}\mathbf{B}$は$m\times p$次元の行列になることに注意．
+
+一般的に行列の積は，左の項の列数と右の項の行数が一致している場合にのみ定義される．ゆえに，$\mathbf{A}\mathbf{B}$が求められるときに，$\mathbf{B}\mathbf{A}$が求められるとは限らない．また，$\mathbf{B}\mathbf{A}$が求められるときにも，$\mathbf{A}\mathbf{B}$と一致するとは限らない．
+
+行列の積を行列を構成する行ベクトル，列ベクトルとして理解しよう．行列$\mathbf{A}$を$m$個の$n$次元ベクトル$\mathbf{a}_i (i = 1,2,\cdots ,m)$の転置（行ベクトル）を積み重ねた列ベクトルとみなす．同様に，行列$\mathbf{B}$を$p$個の$n$次元ベクトル$\mathbf{b}_j (j = 1,2,\cdots ,p)$を横に並べた行ベクトルとみなす．すなわち，
+$$
+\begin{align}
+	\mathbf{A} =  \left[
+		\begin{array}{c}
+      \mathbf{a}_1^\mathrm{T} \\
+      \mathbf{a}_2^\mathrm{T} \\
+      \vdots \\
+      \mathbf{a}_m^\mathrm{T}
+    \end{array}
+	\right], \qquad \mathbf{B} &= [\mathbf{b}_1\ \mathbf{b}_2\ \cdots \ \mathbf{b}_p].
+\end{align}
+$$
+このとき，行列の積$\mathbf{A}\mathbf{B}$は，$\mathbf{a}_i$と$\mathbf{b}_j$の内積$\mathbf{a}_i\cdot \mathbf{b}_j$を$ij$要素とする$m\times p$次元の行列として定義される．
+$$
+\begin{align}
+	\mathbf{A}\mathbf{B} &= \left[
+		\begin{array}{c}
+			\mathbf{a}_1^\mathrm{T} \\
+			\mathbf{a}_2^\mathrm{T} \\
+			\vdots \\
+			\mathbf{a}_m^\mathrm{T}
+		\end{array}
+	\right][\mathbf{b}_1\ \mathbf{b}_2\ \cdots \ \mathbf{b}_p] \nonumber \\
+	&= \left[
+		\begin{array}{cccc}
+			\mathbf{a}_1\cdot \mathbf{b}_1 & \mathbf{a}_1\cdot \mathbf{b}_2 & \cdots & \mathbf{a}_1\cdot \mathbf{b}_p \\
+			\mathbf{a}_2\cdot \mathbf{b}_1 & \mathbf{a}_2\cdot \mathbf{b}_2 & \cdots & \mathbf{a}_2\cdot \mathbf{b}_p \\
+			\vdots & \vdots & & \vdots\\
+			\mathbf{a}_m\cdot \mathbf{b}_1 & \mathbf{a}_m\cdot \mathbf{b}_2 & \cdots & \mathbf{a}_m\cdot \mathbf{b}_p
+    \end{array}
+	\right]
+\end{align}
+$$
+
+行列の積について以下の法則が成立する．
+
+1. **結合法則**
+$$
+\begin{align}
+    (\mathbf{A}\mathbf{B})\mathbf{C} = \mathbf{A}(\mathbf{B}\mathbf{C})
+\end{align}
+$$
+2. **分配法則**
+$$
+\begin{align}
+    \mathbf{A}(\mathbf{B} + \mathbf{C}) = \mathbf{A}\mathbf{B} + \mathbf{A}\mathbf{C}
+\end{align}
+$$
+3. **転置**
+$$
+\begin{align}
+    (\mathbf{A}\mathbf{B})^\mathrm{T} = \mathbf{B}^\mathrm{T}\mathbf{A}^\mathrm{T}
+\end{align}
+$$
+4. **単位行列**： $m\times n$行列$\mathbf{A}$について
+$$
+\begin{align}
+    \mathbf{A}\mathbf{I}_n = \mathbf{I}_m\mathbf{A} = \mathbf{A}
+\end{align}
+$$
+5. **零行列**： $m\times n$行列$\mathbf{A}$について
+$$
+\begin{align}
+    \mathbf{A}\mathbf{O}_{n\times p} = \mathbf{O}_{m\times p},\quad \mathbf{O}_{p\times m}\mathbf{A} = \mathbf{O}_{p\times n}
+\end{align}
+$$
+
+Rでの行列の積は`%*%`で計算できる．転置は`t()`なので，Bの転置とAの積を求めると以下のようになる．
+
+```{r}
+A %*% t(B)
+t(B) %*% A
+```
+
+単位行列に何を掛けても同じものを出力する．
+
+```{r}
+I <- diag(1, 3, 3)
+I
+x <- matrix(c(1, 2, 3), 3, 1)
+I %*% x # x <- c(1, 2, 3)としてもよい
+```
+
+## 逆行列
+
+$p\times p$正方行列$\mathbf{A}$に対して，
+$$
+\begin{align}
+    \mathbf{A}\mathbf{A}^{-1} = \mathbf{A}^{-1}\mathbf{A} = \mathbf{I}_p
+\end{align}
+$$
+を満たす$\mathbf{A}^{-1}$を$\mathbf{A}$の**逆行列**(inverse matrix)という．正方行列に対して逆行列が常に存在するとは限らないが，存在する場合は一意である．$2\times 2$の場合は以下の公式で求められる．
+$$
+\begin{align}
+    \mathbf{A} = \left[
+		\begin{array}{cc}
+			a & b \\
+			c & d \\
+		\end{array}
+	\right] \Longleftrightarrow \mathbf{A}^{-1} = \frac{1}{ad-bc}\left[
+		\begin{array}{cc}
+			d & -b \\
+			-c & a \\
+		\end{array}
+	\right]
+\end{align}
+$$
+$ad-bc$は$\mathbf{A}$の**行列式**(determinant)と呼ばれ，$|\mathbf{A}|$と表される．$|\mathbf{A}|=0$のとき逆行列は存在しない．逆行列が存在することを「正則」，存在しないことを「正則でない」という場合がある．
+
+逆行列に関して，以下の公式が成り立つ．
+
+1. **行列の積の逆行列**
+$$
+\begin{align}
+    (\mathbf{A}\mathbf{B})^{-1} = \mathbf{B}^{-1}\mathbf{A}^{-1}
+\end{align}
+$$
+
+2. **転置と逆行列の入れ替え**
+$$
+\begin{align}
+    (\mathbf{A}^\mathrm{T})^{-1} = (\mathbf{A}^{-1})^\mathrm{T}
+\end{align}
+$$
+
+Rで逆行列は`solve()`関数で求める．
+
+```{r}
+C <- matrix(c(3, 1, 2, 4, 3, 1, 2, 3, 1), 3, 3)
+C
+solve(C)
+C %*% solve(C)
+solve(C) %*% C
+```
+
+## 分散共分散行列の導出
+
+$n\times p$次元行列$\mathbf{X}=[\mathbf{x}_1\ \cdots \ \mathbf{x}_p]$を転置すると，$p\times n$次元行列$\mathbf{X}^\mathrm{T}$になる．これを$\mathbf{X}$の左から掛けると，行列$\mathbf{X}^\mathrm{T}\mathbf{X}$は$p\times p$次元の正方行列になる．具体的には以下のようになる．
+$$
+\begin{align}
+	\mathbf{X}^\mathrm{T}\mathbf{X} &= \left[
+		\begin{array}{c}
+			\mathbf{x}_1^\mathrm{T} \\
+			\mathbf{x}_2^\mathrm{T} \\
+			\vdots \\
+			\mathbf{x}_p^\mathrm{T}
+		\end{array}
+	\right][\mathbf{x}_1\ \mathbf{x}_2\ \cdots \ \mathbf{x}_p] \nonumber \\
+	&= \left[
+		\begin{array}{cccc}
+			\mathbf{x}_1\cdot \mathbf{x}_1 & \mathbf{x}_1\cdot \mathbf{x}_2 & \cdots & \mathbf{x}_1\cdot \mathbf{x}_p \\
+			\mathbf{x}_2\cdot \mathbf{x}_1 & \mathbf{x}_2\cdot \mathbf{x}_2 & \cdots & \mathbf{x}_2\cdot \mathbf{x}_p \\
+			\vdots & \vdots & & \vdots\\
+			\mathbf{x}_p\cdot \mathbf{x}_1 & \mathbf{x}_p\cdot \mathbf{x}_2 & \cdots & \mathbf{x}_p\cdot \mathbf{x}_p
+    \end{array}
+	\right] \nonumber \\
+	&= \left[
+		\begin{array}{cccc}
+			\|\mathbf{x}_1\|^2 & \mathbf{x}_1\cdot \mathbf{x}_2 & \cdots & \mathbf{x}_1\cdot \mathbf{x}_p \\
+			\mathbf{x}_2\cdot \mathbf{x}_1 & \|\mathbf{x}_2\|^2 & \cdots & \mathbf{x}_2\cdot \mathbf{x}_p \\
+			\vdots & \vdots & & \vdots\\
+			\mathbf{x}_p\cdot \mathbf{x}_1 & \mathbf{x}_p\cdot \mathbf{x}_2 & \cdots & \|\mathbf{x}_p\|^2
+    \end{array}
+	\right]
+\end{align}
+$$
+
+ここで，各ベクトル$\mathbf{x}_k$はそれぞれの変数を表すベクトルである．各ベクトルが各要素と平均の差で構成されるベクトル（偏差ベクトル）であるとする．つまり，
+$$
+\begin{align}
+	\mathbf{x}_k = \left[
+		\begin{array}{c}
+      x_{1k} - \bar{x}_k \\
+      x_{2k} - \bar{x}_k \\
+      \vdots \\
+      x_{nk} - \bar{x}_k
+    \end{array}
+	\right].
+\end{align}
+$$
+このとき，行列の積$\mathbf{X}^\mathrm{T}\mathbf{X}$を$n$で割った行列は，対角成分を分散，非対角成分を共分散とする行列になる．つまり，
+$$
+\begin{align}
+	\frac{1}{n}\mathbf{X}^\mathrm{T}\mathbf{X}
+	= \left[
+		\begin{array}{cccc}
+			s_1^2 & s_{12} & \cdots & s_{1p} \\
+			s_{21} & s_2^2 & \cdots & s_{2p} \\
+			\vdots & \vdots & & \vdots\\
+			s_{p1} & s_{p2} & \cdots & s_p^2
+    \end{array}
+	\right].
+\end{align}
+$$
+この行列を**分散共分散行列**(variance-covariance matrix)という．非対角要素の$ij$成分と$ji$成分は同じ共分散$s_{ij}=s_{ji}$であり等しい．このように対角項を対称に等しい正方行列を対称行列という．
+
+分散共分散行列は，多変量解析において基本的な情報となる，各変数の変動の情報とそれぞれの変数間の共変動の情報がまとめられており，大変重要なものである．
+
+```{r}
+x <- c(152.8, 150.1, 182.0, 163.2, 167.3, 160.2, 164.9, 161.4, 179.9, 172.2)
+y <- c(56.3, 52.1, 85.6, 66.8, 74.2, 58.1, 61.9, 55.1, 70.5, 64.1)
+x_cen <- x -mean(x)
+y_cen <- y -mean(y)
+X <- matrix(c(x_cen, y_cen), length(x), 2)
+X
+
+t(X) %*% X * (length(x) - 1)^(-1)
+matrix(c(var(x), cov(x, y), cov(x, y), var(y)), 2, 2)
+```
+
+## 本日の課題
+
+Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出

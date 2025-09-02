@@ -1,0 +1,209 @@
+# 重回帰分析(2)
+
+確率モデルとしての重回帰分析を理解する．
+
+## 行列による表現
+
+前回から引き続き，独立変数は2つとする（$p=2$）が，3以上についても簡単に一般化できる．以下のようにモデルを設定する．
+
+$$
+\begin{align}
+&Y_i=\alpha_0 + \beta_1 (x_{i1} - \bar{x}_{1}) + \beta_2 (x_{i2} - \bar{x}_{2}) + \varepsilon_i,\quad \varepsilon_i \sim N(0,\sigma^2)\ {\rm iid}\\
+&\alpha_0 = \beta_0 +  \beta_1 \bar{x}_{1} + \beta_2 \bar{x}_{2} 
+\end{align}
+$$
+
+行列の形で書き直す．
+
+$$
+\begin{align*}
+  \mathbf{y}=\left[ 
+  \begin{array}{c}
+  Y_1 \\
+  Y_2 \\
+  \vdots \\
+  Y_n \\
+  \end{array} 
+  \right],\ 
+  \mathbf{X}=\left[ 
+  \begin{array}{cc}
+  1 & x_{11}-\bar{x}_1 & x_{12}-\bar{x}_2\\
+  1 & x_{21}-\bar{x}_1 & x_{22}-\bar{x}_2\\
+  \vdots & \vdots \\
+  1 & x_{n1}-\bar{x}_1 & x_{n2}-\bar{x}_2\\
+  \end{array} 
+  \right],\ \mathbf{\beta}=\left[ 
+  \begin{array}{c}
+  \alpha_0 \\
+  \beta_1 \\
+  \beta_2 \\
+  \end{array} 
+  \right],\ \mathbf{\varepsilon}=\left[ 
+  \begin{array}{c}
+  \varepsilon_1 \\
+  \varepsilon_2 \\
+  \vdots \\
+  \varepsilon_n \\
+  \end{array} 
+  \right]
+\end{align*}
+$$
+
+$$\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\varepsilon},\quad \mathbf{\varepsilon}\sim N(\mathbf{0}, \sigma^2 \mathbf{I}_n)$$
+
+最小二乗法によって$\mathbf{\beta}$の推定量$\hat{\beta}$を求める．以下の残差平方和の最小化問題を解く．
+$$
+S_e = (\mathbf{y} - \mathbf{X}\hat{\beta})'(\mathbf{y} - \mathbf{X}\hat{\beta})
+$$
+
+$$
+\begin{align}
+\mathbf{X}'\mathbf{X}=\left[ 
+\begin{array}{ccc}
+n & 0 & 0 \\
+0 & S_{11} & S_{12} \\
+0 & S_{12} & S_{22} \\
+\end{array} 
+\right],\ \  (\mathbf{X}'\mathbf{X})^{-1}=\left[ 
+\begin{array}{ccc}
+1/n & 0 & 0\\
+0 & S_{22}/V & -S_{12}/V \\
+0 & -S_{12}/V & S_{11}/V \\
+\end{array} 
+\right],\ \ 
+\mathbf{X}'\mathbf{y}=\left[ 
+\begin{array}{c}
+\sum_{i=1}^n Y_i \\
+S_{1Y} \\
+S_{2Y} \\
+\end{array} 
+\right] 
+\end{align}
+$$
+ただし，$V=S_{11}S_{22} - S_{12}^2$．
+
+$\mathbf{X}'\mathbf{X}$が正則である（逆行列が存在する）ことの条件は，$|\mathbf{X}'\mathbf{X}|=nV\neq 0$である．つまり，多重共線性が存在する場合，解は求められない．$\mathbf{X}'\mathbf{X}$が正則のとき，以下が成り立つ
+$$\mathbf{X}'\mathbf{X}\hat{\beta}=\mathbf{X}'\mathbf{y} \Longleftrightarrow \hat{\beta}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$
+つまり，以下を得る．
+$$
+\hat{\beta} = \left[ 
+\begin{array}{c}
+\bar{Y} \\
+(S_{22}S_{1Y} - S_{12}S_{2Y})/V \\
+(-S_{12}S_{1Y} + S_{11}S_{2Y})/V \\
+\end{array} 
+\right] 
+$$
+
+## 回帰係数の標本分布
+
+途中をすべて飛ばして結論だけを述べると，$\hat{\beta}$は以下のように分布する．
+$$
+\hat{\beta} \sim N(\beta, \sigma^2 (\mathbf{X}'\mathbf{X})^{-1})
+$$
+誤差分散$\sigma^2$は未知なので，$S_e$に$\hat{\beta}$を代入したもので推測すると以下のようになる（ここでは$p = 2$）．
+$$
+\hat{\sigma}^2 = \frac{S_{YY} - \hat{\beta}_1 S_{1Y} - \hat{\beta}_2 S_{2Y}}{n - 1 - p}
+$$
+
+このとき，$H_0: \beta_k = 0\ (k = 1, 2)$の帰無仮説の下で以下が成立する．
+$$
+t_{\hat{\beta}_k} = \frac{\hat{\beta}_k}{\sqrt{\hat{\sigma}^2(\mathbf{X}'\mathbf{X})^{-1}_{(k + 1)(k + 1)}}} \sim t(n - 1 - p)
+$$
+具体的には，以下のようになる．
+$$
+\begin{align}
+t_{\hat{\beta}_1} &= \frac{S_{22}S_{1Y} - S_{12}S_{2Y}}{\sqrt{\hat{\sigma}^2 S_{22}V}} \sim t(n - 3) \\
+t_{\hat{\beta}_2} &= \frac{-S_{12}S_{1Y} + S_{11}S_{2Y}}{\sqrt{\hat{\sigma}^2 S_{11}V}} \sim t(n - 3) 
+\end{align}
+$$
+
+## 具体例
+
+```{r warning = FALSE, message = FALSE}
+library(tidyverse)
+set.seed(8931)
+
+tibble(
+  x1 = runif(100, 0, 50),
+  x2 = runif(100, 0, 50),
+  y = rnorm(100, x1 + 2 * x2 + 10, 10)
+  ) -> data
+
+data %>% with(lm(y ~ x1 + x2)) %>% summary()
+```
+
+行列演算で求める．
+```{r}
+X <- matrix(c(rep(1, nrow(data)), data$x1 - mean(data$x1), data$x2 - mean(data$x2)), nrow = nrow(data), ncol = 3)
+y <- data$y
+
+# Estimate
+b <- solve(t(X) %*% X) %*% t(X) %*% y
+b
+b0 <- b[1] - b[2] * mean(data$x1) - b[3] * mean(data$x2)
+b0
+
+# Std. Error
+sigma_hat <- t(y - X %*% b) %*% (y - X %*% b) / (nrow(data) - 3)
+std_error <- sqrt(c(sigma_hat) * diag(solve(t(X) %*% X)))
+std_error[c(2, 3)] # for beta_1, beta_2
+
+# t value
+t_value <- b / std_error
+t_value[c(2, 3)]  # for beta_1, beta_2
+```
+
+ここまでは説明の便宜上，独立変数を平均を用いて中心化していたが，中心化せずにそのままで$X$を構成しても回帰係数は求められる．この場合は$\beta_0$がダイレクトに得られる（理論的詳細は割愛）．
+```{r}
+X <- matrix(c(rep(1, nrow(data)), data$x1, data$x2), nrow = nrow(data), ncol = 3)
+y <- data$y
+
+# Estimate
+b <- solve(t(X) %*% X) %*% t(X) %*% y
+b
+
+# Std. Error
+sigma_hat <- t(y - X %*% b) %*% (y - X %*% b) / (nrow(data) - 3)
+std_error <- sqrt(c(sigma_hat) * diag(solve(t(X) %*% X)))
+std_error
+
+# t value
+t_value <- b / std_error
+t_value
+```
+
+## モデル比較のF検定
+
+ある独立変数を追加することが，従属変数の説明力の増加に寄与したといえるだろうか．こうしたことを検討するために，モデル比較を行う．ここでは，もっとも単純な例として，変数を新たに一つ追加したモデルと，追加しないモデルを比較する．
+
+$$
+\begin{align}
+M1:\ &Y = \beta_0 + \beta_1 x_1 + \varepsilon \\
+M2:\ &Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \varepsilon 
+\end{align}
+$$
+
+このような比較では，それぞれのモデルの最小残差平方和を用いてF値を計算し，それぞれのモデルが等しい，つまり$H_0: \beta_2 = 0$を帰無仮説としたときに，F値が理論的にF分布に従うことを利用して検定を行う．
+
+```{r}
+data %>% with(lm(y ~ x1)) -> lm_m1
+data %>% with(lm(y ~ x1 + x2)) -> lm_m2
+anova(lm_m1, lm_m2)
+
+# F value
+# ((105910 - 8666) / (98 - 97)) / (8666 / 97)
+```
+
+しかし実は，変数を1つだけ追加する場合のF値は，その変数のt値の二乗に等しく，t検定の結果とF検定の結果は等価である．つまり，t値による検定が有意であれば，その変数を追加することに意味があった（説明力を有意に増加させた）ということがいえる．
+
+```{r}
+t_value[3]^2
+```
+
+ちなみに，`lm`のサマリーで報告されるF値は切片のみのヌル・モデル（$Y = \beta_0 + \varepsilon$）と当該モデルを比較したF値である．
+
+
+## 本日の課題
+
+仮想例を用いて，`lm`と行列演算で重回帰分析を実施せよ．Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出

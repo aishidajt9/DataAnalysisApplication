@@ -1,0 +1,185 @@
+# 重回帰分析(1)
+
+説明変数が複数ある重回帰分析について理解する．まずは確率を入れない記述的な形で理解する．
+
+## 独立変数が2つの場合
+
+記述的な意味での**重回帰分析**(multiple regressoin analysis)は，独立変数が2つ（$x_1, x_2$）の場合，2つの独立変数と従属変数（$y$）の3つの軸で構成される3次元空間上の点$(x_1, x_2, y)$の散らばりをうまく要約するように平面を引くことに対応する．
+
+```{r warning = FALSE, message = FALSE}
+library(tidyverse)
+set.seed(8931)
+
+tibble(
+  x1 = runif(100, 0, 50),
+  x2 = runif(100, 0, 50),
+  y = rnorm(100, x1 + 2 * x2 + 10, 10)
+  ) -> data
+```
+
+```{r warning = FALSE, message = FALSE}
+# install.packages("rgl")
+# デバイスの環境によってはうまくインストールできないかもしれないが，その場合は以下は実行しなくてよい
+library(rgl)
+options(rgl.printRglwidget = TRUE)
+
+plot3d(data$x1, data$x2, data$y, type = "p", xlab = "x1", ylab = "x2", zlab = "y")
+planes3d(1, 2, -1, 10, col = "blue", alpha = 0.3)
+```
+
+$x_1, x_2$を2つの独立変数（制約なく動く変数），$y$を従属変数（$x_1, x_2$の変化に伴って変化する変数）とすると，平面
+$$
+\begin{align}
+	y=b_0+b_1 x_1 + b_2 x_2
+\end{align}
+$$
+の係数$b_0, b_1, b_2$として，散布図を表現する最適のものを選ぶ問題となる．$b_1, b_2$を**偏回帰係数**(partial regression coefficient)という．
+
+なぜ「偏」回帰係数と呼ぶのだろうか．平面の式を$x_1, x_2$それぞれで偏微分すると，
+$$
+\frac{\partial y}{\partial x_1} = b_1,\quad \frac{\partial y}{\partial x_2} = b_2
+$$
+を得る．つまり，$b_1$（$b_2$）は$x_2$（$x_1$）を一定とした場合の$x_1$--$y$平面（$x_2$--$y$平面）における回帰平面の断面の傾きを示している．
+
+下図は$x_2 = 20$と固定したときの$x_1$--$y$平面（灰色）上の回帰平面の断面を示す．
+
+```{r}
+plot3d(data$x1, data$x2, data$y, type = "p", xlab = "x1", ylab = "x2", zlab = "y")
+planes3d(1, 2, -1, 10, col = "blue", alpha = 0.3)
+planes3d(0, 1, 0, -20, col='grey',alpha=1)
+```
+
+このモデルでは，偏回帰係数は定数である．つまり，回帰曲面ではなく回帰平面を考える．空間上に漂うボツボツをうまくつかまえるために，下敷きをあてがうことをイメージせよ．
+
+## 最小二乗法
+
+最適な回帰平面を求めるために，点$(x_{i1}, x_{i2}, y_i)$のそれぞれについて
+$$
+\begin{align}
+	y_i= a_0 + b_1 (x_{i1} - \bar{x}_1) + b_2 (x_{i2} - \bar{x}_2) + e_i,\quad a_0 = b_0 + b_1 \bar{x}_1 + + b_2 \bar{x}_2
+\end{align}
+$$
+という関係を仮定する．ここで，$e_i$は点$(x_{i1}, x_{i2}, y_i)$の平面$y_i= a_0 + b_1 (x_{i1} - \bar{x}_1) + b_2 (x_{i2} - \bar{x}_2)$からの$y$方向の残差である．この残差平方和
+$$
+\begin{align}
+	S_e=\sum_{i=1}^n e_i^2 =\sum_{i=1}^n(y_i - a_0 - b_1 (x_{i1} - \bar{x}_1) - b_2 (x_{i2} - \bar{x}_2))^2
+\end{align}
+$$
+を最小にする$a_0,b_1,b_2$の値を求める．
+$$
+\begin{align}
+\frac{\partial S_e}{\partial a_0}&=-2\sum_{i=1}^n(y_i - a_0 - b_1 (x_{i1} - \bar{x}_1) - b_2 (x_{i2} - \bar{x}_2))=0\\
+\frac{\partial S_e}{\partial b_1}&=-2\sum_{i=1}^n(y_i - a_0 - b_1 (x_{i1} - \bar{x}_1) - b_2 (x_{i2} - \bar{x}_2))(x_{i1} - \bar{x}_1)=0\\
+\frac{\partial S_e}{\partial b_2}&=-2\sum_{i=1}^n(y_i - a_0 - b_1 (x_{i1} - \bar{x}_1) - b_2 (x_{i2} - \bar{x}_2))(x_{i2} - \bar{x}_2)=0
+\end{align}
+$$
+第一式より，$a_0 = \bar{y}$を得る．第二，第三式より以下のような連立方程式を得る．
+$$
+\begin{align}
+b_1 S_{11} + b_2 S_{12} &= S_{1y}\\
+b_1 S_{12} + b_2 S_{22} &= S_{2y}
+\end{align}
+$$
+ここで，$S_{12} = \sum (x_{i1} - \bar{x}_1)(x_{i2} - \bar{x}_2), S_{1y} = \sum (x_{i1} - \bar{x}_1)(y_i - \bar{y})$などを表す．これを行列で表し解くと次のようになる．
+$$
+\begin{align}
+\left[ 
+\begin{array}{cc}
+S_{11} & S_{12} \\
+S_{12} & S_{22} \\
+\end{array} 
+\right]\left[
+\begin{array}{c}
+b_1 \\
+b_2 \\
+\end{array} 
+\right] = \left[
+\begin{array}{c}
+S_{1y} \\
+S_{2y} \\
+\end{array} 
+\right] \Longleftrightarrow
+\left[
+\begin{array}{c}
+b_1 \\
+b_2 \\
+\end{array} 
+\right] = \left[ 
+\begin{array}{cc}
+S_{11} & S_{12} \\
+S_{12} & S_{22} \\
+\end{array} 
+\right]^{-1}\left[
+\begin{array}{c}
+S_{1y} \\
+S_{2y} \\
+\end{array} 
+\right]
+\end{align}
+$$
+ここから以下の解を得る．
+$$
+\begin{align}
+\left[
+\begin{array}{c}
+b_1 \\
+b_2 \\
+\end{array} 
+\right] = 
+\frac{1}{S_{11}S_{22} - S_{12}^2}
+\left[ 
+\begin{array}{c}
+S_{22}S_{1y} - S_{12}S_{2y} \\
+- S_{12}S_{1y} - S_{11}S_{2y} \\
+\end{array} 
+\right]
+\end{align}
+$$
+
+## 多重共線性
+
+先に分散共分散行列（の$n-1$倍）の逆行列を求めたが，逆行列が存在しない場合，解は不定形となる．この状態を**多重共線性**(multicollinearity)が存在する，という（略してマルチコ）．具体的には行列式がゼロつまり以下が成り立つとき逆行列は存在しない．
+$$
+S_{11}S_{22} - S_{12}^2 = 0 \Longleftrightarrow \frac{S_{12}^2}{S_{11}S_{22}} = (r_{12})^2 = 1  \Longleftrightarrow  r_{12} = \pm 1
+$$
+つまり，$x_1, x_2$が完全に正もしくは負の相関関係にあるとき，多重共線性が存在する（また，分散共分散がゼロの場合も逆行列は存在しない）．これは，2次元の独立変数で$y$を説明しようとするところ，実は2次元ではなく1次元しかない，ゆえに$x_1,x_2$のどちらかを用いた単回帰モデルでよいことを示している（ランク落ち）．完全な相関ではなくても，正負の相関が極めて高いとき，標準誤差が大きくなり推定が不安定になる．
+
+## 調整済み決定係数
+
+単回帰分析の時と同様に，$y$の分散成分は平均から回帰平面までのばらつきである$S_R$と回帰平面から$y$までのばらつきである$S_e$に分解できる．
+$$
+R^2 = \frac{S_R}{S_{yy}} = 1 - \frac{S_e}{S_{yy}}
+$$
+を**決定係数**(coefficient of determination)として定義する．決定係数は「$y$の変動のうち，回帰によって説明できる変動の割合」を示し，1に近いほどデータに近似するという意味で回帰式の性能がよい．重回帰の場合，決定係数は$y$と$y$の予測値（回帰平面上の値）との相関係数の二乗である．
+
+また，重回帰分析の場合，独立変数の数が増えれば決定係数は自動的に大きくなる性質がある．意味のない変数でも見かけの決定係数は大きくなるので，**自由度調整済み決定係数**(adjusted R squared)を用いる．
+$$
+R^{*2} = 1 - \frac{S_e / (n - 1 - p)}{S_{yy}/(n - 1)}
+$$
+ただし，$p$は独立変数の数．
+
+## 分析例
+
+```{r}
+lm(y ~ x1 + x2, data) -> lm_res
+coef(lm_res) # lm_res$coefficients
+summary(lm_res)$r.squared
+summary(lm_res)$adj.r.squared
+```
+
+多重共線性の例．
+```{r}
+data %>%
+  mutate(
+    x3 = 3 * x1 + 1
+  ) %>%
+  with(lm(y ~ x1 + x3))
+```
+
+`x3`は`NA`となって計算されない．
+
+
+## 本日の課題
+
+自ら2変数回帰分析の例と多重共線性の例を作って，Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出
+

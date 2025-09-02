@@ -1,0 +1,35 @@
+# R and RStudio files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Bookdown output files
+*.html
+_bookdown_files/
+_main_files/
+docs/
+
+# LaTeX output
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.tex
+
+# Temporary files
+tmp.*
+temp.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
