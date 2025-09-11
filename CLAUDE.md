@@ -88,3 +88,69 @@ git push origin main    # リモートリポジトリに反映
 4. GitHub Pagesリポジトリにもプッシュ
 
 コマンドファイル: `.claude/commands/publish.md`
+
+## TOCナビゲーション設定（重要）
+
+### 成功した設定（2025-09-11確認済み）
+
+**`_output.yml` の正しい設定:**
+```yaml
+bookdown::gitbook:
+  css: style.css
+  split_by: rmd              # Rmdファイル名ベースでHTML生成
+  toc_depth: 1               # 章レベル（レベル1）のみ表示
+  includes:
+    after_body: fix-toc.html # JavaScriptでdata-path修正
+  config:
+    toc:
+      collapse: none         # 折りたたみ機能無効化
+      scroll_highlight: yes
+      before: |
+        <li><a href="./">2025データ分析応用</a></li>
+      after: |
+        <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+    edit: https://github.com/USERNAME/REPO/edit/BRANCH/%s
+    download: ["pdf", "epub"]
+    search:
+      engine: fuse
+      options: null
+```
+
+**`_bookdown.yml` の設定:**
+```yaml
+delete_merged_file: true
+language:
+  ui:
+    chapter_name: ["第", "章"]
+output_dir: "../aishidajt9.github.io/DataAnalysisApplication"
+rmd_files:
+  - "index.Rmd"
+  - "01-descritive.Rmd"
+  - "02-inference.Rmd"
+  - "03-linear_algebra_1.Rmd"
+  - "04-linear_algebra_2.Rmd"
+  - "05-single_regression_1.Rmd"
+  - "06-single_regression_2.Rmd"
+  - "07-multi-regression_1.Rmd"
+  - "08-multi-regression_2.Rmd"
+  - "09-multi-regression_3.Rmd"
+  - "10-logistic-regression_1.Rmd"
+  - "11-logistic-regression_2.Rmd"
+```
+
+**重要な技術ポイント:**
+- `split_by: rmd` でRmdファイル名ベースのHTML生成（`01-descritive.html`等）
+- `toc_depth: 1` でサブセクション非表示を強制
+- `collapse: none` で一貫した表示
+- `fix-toc.html` でdata-path属性をJavaScriptで修正
+
+### 解決した問題
+1. ✅ 左サイドバーTOCリンクが正常動作
+2. ✅ 章レベルのみの一貫した表示（サブセクション非表示）
+3. ✅ 重複HTMLファイル問題解決
+4. ✅ bookdown 0.44 + pandoc 3.7互換性問題解決
+
+### 注意事項
+- `fix-toc.html` ファイルが必須
+- 設定変更時は必ず `bookdown::render_book()` で全体再ビルド
+- GitHub Pagesブランチは `master` を使用
