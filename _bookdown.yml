@@ -3,3 +3,4 @@ language:
   ui:
     chapter_name:  ["第", "章"]
 output_dir: "../aishidajt9.github.io/DataAnalysisApplication"
+rmd_files: ["index.Rmd", "01-descritive.Rmd", "02-inference.Rmd", "03-linear_algebra_1.Rmd", "04-linear_algebra_2.Rmd", "05-single_regression_1.Rmd", "06-single_regression_2.Rmd", "07-multi-regression_1.Rmd", "08-multi-regression_2.Rmd", "09-multi-regression_3.Rmd", "10-logistic-regression_1.Rmd", "11-logistic-regression_2.Rmd"]
