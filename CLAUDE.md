@@ -91,7 +91,7 @@ git push origin main    # リモートリポジトリに反映
 
 ## TOCナビゲーション設定（重要）
 
-### 成功した設定（2025-09-11確認済み）
+### 最終成功設定（2025-09-11確認済み）- HTML直接書き換え方式
 
 **`_output.yml` の正しい設定:**
 ```yaml
@@ -99,8 +99,8 @@ bookdown::gitbook:
   css: style.css
   split_by: rmd              # Rmdファイル名ベースでHTML生成
   toc_depth: 1               # 章レベル（レベル1）のみ表示
-  includes:
-    after_body: fix-toc.html # JavaScriptでdata-path修正
+  # includes:                # JavaScript方式は使用しない
+  #   after_body: fix-toc.html
   config:
     toc:
       collapse: none         # 折りたたみ機能無効化
@@ -138,19 +138,45 @@ rmd_files:
   - "11-logistic-regression_2.Rmd"
 ```
 
+**`fix_toc_direct.R` - HTML直接書き換えスクリプト:**
+```r
+# data-levelを使用した確実なTOC修正
+level_to_file <- list(
+  "1" = "index.html",
+  "2" = "01-descritive.html",
+  "3" = "02-inference.html", 
+  "4" = "03-linear_algebra_1.html",
+  "5" = "04-linear_algebra_2.html",
+  "6" = "05-single_regression_1.html",
+  "7" = "06-single_regression_2.html",
+  "8" = "07-multi-regression_1.html",
+  "9" = "08-multi-regression_2.html",
+  "10" = "09-multi-regression_3.html",
+  "11" = "10-logistic-regression_1.html",
+  "12" = "11-logistic-regression_2.html"
+)
+```
+
 **重要な技術ポイント:**
 - `split_by: rmd` でRmdファイル名ベースのHTML生成（`01-descritive.html`等）
 - `toc_depth: 1` でサブセクション非表示を強制
 - `collapse: none` で一貫した表示
-- `fix-toc.html` でdata-path属性をJavaScriptで修正
+- **HTML直接書き換え方式**: `data-level`属性を使用してTOCリンクを修正
+- JavaScript方式から移行：より確実でブラウザ非依存
 
 ### 解決した問題
-1. ✅ 左サイドバーTOCリンクが正常動作
+1. ✅ 左サイドバーTOCリンクが正常動作（全12章）
 2. ✅ 章レベルのみの一貫した表示（サブセクション非表示）
 3. ✅ 重複HTMLファイル問題解決
 4. ✅ bookdown 0.44 + pandoc 3.7互換性問題解決
+5. ✅ JavaScript方式からHTML直接書き換え方式に移行完了
+
+### アーカイブ
+- JavaScript方式は `archive/javascript-method/` に保存済み
+- 復活方法: `cp archive/javascript-method/* .`
 
 ### 注意事項
-- `fix-toc.html` ファイルが必須
+- `fix_toc_direct.R` スクリプトが必須
+- `/publish` コマンドで自動実行される
 - 設定変更時は必ず `bookdown::render_book()` で全体再ビルド
 - GitHub Pagesブランチは `master` を使用

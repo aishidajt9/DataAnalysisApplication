@@ -2,20 +2,20 @@
 # TOC HTML files direct fix script
 # Replaces JavaScript method with direct HTML manipulation after bookdown render
 
-# Chapter mapping from titles to correct filenames
-chapter_mapping <- list(
-  "イントロダクション" = "index.html",
-  "記述統計の復習" = "01-descritive.html",
-  "推測統計の復習" = "02-inference.html", 
-  "線形代数の基礎(1)" = "03-linear_algebra_1.html",
-  "線形代数の基礎(2)" = "04-linear_algebra_2.html",
-  "単回帰分析(1)" = "05-single_regression_1.html",
-  "単回帰分析(2)" = "06-single_regression_2.html",
-  "重回帰分析(1)" = "07-multi-regression_1.html",
-  "重回帰分析(2)" = "08-multi-regression_2.html",
-  "重回帰分析(3)" = "09-multi-regression_3.html",
-  "ロジスティック回帰分析(1)" = "10-logistic-regression_1.html",
-  "ロジスティック回帰分析(2)" = "11-logistic-regression_2.html"
+# Chapter mapping from data-level to correct filenames
+level_to_file <- list(
+  "1" = "index.html",
+  "2" = "01-descritive.html",
+  "3" = "02-inference.html", 
+  "4" = "03-linear_algebra_1.html",
+  "5" = "04-linear_algebra_2.html",
+  "6" = "05-single_regression_1.html",
+  "7" = "06-single_regression_2.html",
+  "8" = "07-multi-regression_1.html",
+  "9" = "08-multi-regression_2.html",
+  "10" = "09-multi-regression_3.html",
+  "11" = "10-logistic-regression_1.html",
+  "12" = "11-logistic-regression_2.html"
 )
 
 fix_toc_in_file <- function(filepath) {
@@ -26,18 +26,16 @@ fix_toc_in_file <- function(filepath) {
   original_content <- content
   fixed_count <- 0
   
-  # Fix each chapter mapping
-  for (title in names(chapter_mapping)) {
-    correct_file <- chapter_mapping[[title]]
+  # Fix each chapter by data-level
+  for (level in names(level_to_file)) {
+    correct_file <- level_to_file[[level]]
     
-    # Pattern to match chapter list items with this title
-    # Matches: <li class="chapter" data-level="2" data-path="index.html"><a href="#アンカー">2 タイトル</a>
+    # Pattern to match: <li class="chapter" data-level="4" data-path="anything"><a href="anything">
+    # Replace both data-path and href with correct filename
     pattern <- paste0(
-      '(<li class="chapter"[^>]*data-path=")[^"]*',
-      '("[^>]*><a[^>]*href=")[^"]*',  # href might be anchor link
-      '("[^>]*>\\s*<i[^>]*></i>\\s*<b>\\d+</b>\\s*',
-      gsub("([()\\[\\]])", "\\\\\\1", title),  # Escape special regex characters
-      ')'
+      '(<li class="chapter"[^>]*data-level="', level, '"[^>]*data-path=")[^"]*',
+      '("[^>]*><a[^>]*href=")[^"]*',
+      '(")'
     )
     
     replacement <- paste0("\\1", correct_file, "\\2", correct_file, "\\3")
