@@ -2,8 +2,6 @@ bookdown::gitbook:
   css: style.css
   split_by: rmd
   toc_depth: 1
-  # includes:
-  #   after_body: fix-toc.html
   config:
     toc:
       collapse: none

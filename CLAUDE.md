@@ -45,6 +45,7 @@ bookdown::render_book()
 - ビルド成果物（`_bookdown_files/`, `_main_files/`）
 - R履歴ファイル（`.Rhistory`）
 - 一時ファイル（`tmp.R`）
+- 削除済みファイル（`fix-toc.html`, `fix-toc.js`, `debug_pattern.R`）
 
 ## 一連の公開作業手順
 
@@ -180,3 +181,42 @@ level_to_file <- list(
 - `/publish` コマンドで自動実行される
 - 設定変更時は必ず `bookdown::render_book()` で全体再ビルド
 - GitHub Pagesブランチは `master` を使用
+
+## 将来のbookdown/pandoc修正確認方法
+
+### このTOC修正が不要になる条件
+bookdown 0.44 + pandoc 3.7の互換性問題が修正され、`split_by: rmd`設定で最初から正しい`data-path`属性が生成されるようになった場合
+
+### 修正確認のテスト方法
+```r
+# 1. TOC修正スクリプトを無効にしてテスト
+Rscript -e "bookdown::render_book()"
+
+# 2. 生成されたHTMLのdata-path属性を確認
+grep "data-path" "../aishidajt9.github.io/DataAnalysisApplication/index.html"
+```
+
+### 期待される修正後の状態
+- 全ての`data-path`が最初から正しいファイル名を指している
+- アンカーリンク（`href="#章名"`）ではなく、直接ファイルリンク（`href="01-descritive.html"`）が生成される
+- 章4以降も`data-path="index.html"`ではなく、正しいHTMLファイル名になる
+
+### 定期確認のタイミング
+- bookdownパッケージ更新時
+- pandoc更新時  
+- 新しいR環境セットアップ時
+
+### 不要になった場合の手順
+```bash
+# 1. publishコマンドをバックアップ
+cp .claude/commands/publish.md .claude/commands/publish.md.bak
+
+# 2. publishコマンドから "Rscript fix_toc_direct.R &&" を削除
+# 3. fix_toc_direct.Rをarchiveディレクトリに移動
+mv fix_toc_direct.R archive/
+
+# 4. CLAUDE.mdの該当セクションを更新
+```
+
+### 現在のワークアラウンド理由
+bookdown 0.44 + pandoc 3.7環境では、`split_by: rmd`設定にも関わらず一部の章がアンカーリンクとして生成され、正しい`data-path`属性が設定されないため、HTML直接書き換えによる修正が必要
