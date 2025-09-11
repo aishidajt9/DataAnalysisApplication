@@ -14,7 +14,7 @@ Complete workflow to render bookdown project and publish to GitHub Pages:
 
 Execute this complete sequence:
 ```bash
-Rscript -e "bookdown::render_book()" && git add . && git commit -m "${ARGUMENTS:-"Update content and render $(date '+%Y-%m-%d %H:%M')"}" && git push origin main && git -C "../aishidajt9.github.io/DataAnalysisApplication" add . && git -C "../aishidajt9.github.io/DataAnalysisApplication" commit -m "Update rendered site $(date '+%Y-%m-%d %H:%M')" && git -C "../aishidajt9.github.io/DataAnalysisApplication" push origin main
+Rscript -e "bookdown::render_book()" && git add . && git commit -m "${ARGUMENTS:-"Update content and render $(date '+%Y-%m-%d %H:%M')"}" && git push origin main && git -C "../aishidajt9.github.io/DataAnalysisApplication" add . && git -C "../aishidajt9.github.io/DataAnalysisApplication" commit -m "Update rendered site $(date '+%Y-%m-%d %H:%M')" && git -C "../aishidajt9.github.io/DataAnalysisApplication" push origin master
 ```
 
 This ensures both the source repository and the GitHub Pages site are updated in one command.
