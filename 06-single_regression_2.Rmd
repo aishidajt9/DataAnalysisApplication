@@ -65,6 +65,7 @@ b1 %>%
 ```
 
 $b_1$は真値の1を中心とした分布となる．$b_1$の平均と標準偏差は次の通り．
+
 ```{r}
 mean(b1)
 sd(b1)
@@ -74,29 +75,23 @@ sd(b1)
 
 次に，一般的に確率を入れた回帰分析を導入する．
 
+母集団上で確率変数$Y$が（確率変数ではない）変数$x$と係数$\beta_0, \beta_1$によって，平均が規定される正規分布に従っていると考える． $$\begin{align}
+    Y\sim N(\beta_0 + \beta_1 x, \sigma^2)
+\end{align}$$
 
-母集団上で確率変数$Y$が（確率変数ではない）変数$x$と係数$\beta_0, \beta_1$によって，平均が規定される正規分布に従っていると考える．
-\begin{align}
-	Y\sim N(\beta_0 + \beta_1 x, \sigma^2)
-\end{align}
-
-母集団からのランダムサンプリングによって，$n$個の独立な確率変数$Y_1,Y_2,\ldots,Y_n$が得られる．確率変数$Y_1,Y_2,\ldots,Y_n$は，
-$$
+母集団からのランダムサンプリングによって，$n$個の独立な確率変数$Y_1,Y_2,\ldots,Y_n$が得られる．確率変数$Y_1,Y_2,\ldots,Y_n$は， $$
 \begin{align}
 Y_i=\beta_0+\beta_1 x_i,\qquad Y_i \sim N(\beta_0+\beta_1 x_i,\sigma^2)
 \end{align}
-$$
-もしくは，誤差確率変数$\varepsilon_i$を導入して別の表現で書けば
-$$
+$$ もしくは，誤差確率変数$\varepsilon_i$を導入して別の表現で書けば $$
 \begin{align}
 Y_i=\beta_0+\beta_1 x_i +\varepsilon_i,\qquad \varepsilon_i \sim N(0,\sigma^2)\ {\rm iid}
 \end{align}
-$$
-と表すことができる．この仮定によって，$\varepsilon$について以下のことが成り立つ．
+$$ と表すことができる．この仮定によって，$\varepsilon$について以下のことが成り立つ．
 
-1. $\forall i, E(\varepsilon_i)=0$
-2. $\forall i, V(\varepsilon_i)=E(\varepsilon_i^2)=\sigma^2$
-3. $\forall i\neq j,Cov(\varepsilon_i,\varepsilon_j)=E(\varepsilon_i\varepsilon_j)=0$
+1.  $\forall i, E(\varepsilon_i)=0$
+2.  $\forall i, V(\varepsilon_i)=E(\varepsilon_i^2)=\sigma^2$
+3.  $\forall i\neq j,Cov(\varepsilon_i,\varepsilon_j)=E(\varepsilon_i\varepsilon_j)=0$
 
 以上の仮定を図解すると下図のようになる．母集団分布は赤色の正規分布であり，$x$のレベルで平均パラメータが動く（本当は，分布の赤い線は$x$のレベルに応じてぎっしり詰まっている．カマボコを上から俯瞰することを想像せよ）．ただし，分散は$x$のレベルで変わらない（分散均一性の仮定）．そして，実際の散布図データは，この母集団分布からランダムに抽出されたものである（カマボコをぶるんぶるんしたら，黒いボツボツがふぁらーと落ちてくるみたいなイメージ）．
 
@@ -127,45 +122,35 @@ dat %>%
 
 $$
 \hat{\beta}_1 = \frac{S_{xY}}{S_{xx}} = \frac{C_{xY}}{\hat{\sigma}_x^2},\quad \hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{x}, \quad 
-$$
-ただし，
-$$
+$$ ただし， $$
 S_{xY}=\sum_{i=1}^n (x_i - \bar{x})(Y_i - \bar{Y})
-$$
-は確率変数$Y_i$によって動く確率変数である．ここから，$\hat{\beta}_1$も確率変数$Y_i$によって動く確率変数である（$\hat{\beta}_0$も）．
+$$ は確率変数$Y_i$によって動く確率変数である．ここから，$\hat{\beta}_1$も確率変数$Y_i$によって動く確率変数である（$\hat{\beta}_0$も）．
 
 ここで何より重要なのは，$Y_i$が確率変数であり，サンプリングによって確率的に値が変化するものであり，それに応じて$\hat{\beta}_1$も確率変数として，サンプリングによって確率的に値が変化する，ということである．したがって，$\hat{\beta}_1$は標本分布をもつ．
 
-途中をすっ飛ばして結論だけを言えば，$\hat{\beta}_1$は以下の分布にしたがう．
-$$
+途中をすっ飛ばして結論だけを言えば，$\hat{\beta}_1$は以下の分布にしたがう． $$
 \begin{align}
-\hat{\beta}_1 \sim N(\beta_1,\sigma^2/S_{xx}) \label{dist_beta_hat}
+\hat{\beta}_1 \sim N(\beta_1,\sigma^2/S_{xx})
 \end{align}
 $$
 
-つまり，$\hat{\beta}_1$の標本分布は，真の値$\beta_1$を中心とした正規分布である．しかし，誤差分散$\sigma^2$は通常未知なので，残差平方和を利用して$\hat{\sigma}^2=S_e/(n-2)$と推定すると，
-$$
+つまり，$\hat{\beta}_1$の標本分布は，真の値$\beta_1$を中心とした正規分布である．しかし，誤差分散$\sigma^2$は通常未知なので，残差平方和を利用して$\hat{\sigma}^2=S_e/(n-2)$と推定すると， $$
 \begin{align}
 t_{\hat{\beta}_1}=\frac{\hat{\beta}_1-\beta_1}{\sqrt{\hat{\sigma}^2/S_{xx}}} \sim t(n-2)
 \end{align}
-$$
-が成り立つ．つまり，$\hat{\beta}_1$を標準化する際に$\hat{\beta}_1$の分散をデータから推定して得られた$t$統計量は自由度$n-2$の$t$分布に従う．このことを用いて検定を行う．
+$$ が成り立つ．つまり，$\hat{\beta}_1$を標準化する際に$\hat{\beta}_1$の分散をデータから推定して得られた$t$統計量は自由度$n-2$の$t$分布に従う．このことを用いて検定を行う．
 
 ## 検定統計量
 
-帰無仮説，対立仮説をそれぞれ
-$$
+帰無仮説，対立仮説をそれぞれ $$
 \begin{align}
 H_0: \beta_1=0,\qquad H_1:\beta_1\neq 0
 \end{align}
-$$
-とする．このとき，帰無仮説が正しいという仮定の下で検定統計量は自由度$n-2$の$t$分布に従う．つまり，
-$$
+$$ とする．このとき，帰無仮説が正しいという仮定の下で検定統計量は自由度$n-2$の$t$分布に従う．つまり， $$
 \begin{align}
 t^*_{\hat{\beta}_1}=\frac{\hat{\beta}_1}{\sqrt{\hat{\sigma}^2/S_{xx}}} \sim t(n-2). 
 \end{align}
-$$
-$|t^*_{\hat{\beta}_1}|\geq t_{\alpha/2}(n-2)$のとき，両側$100\alpha\%$の有意確率で帰無仮説を棄却し対立仮説を採用する．$|t^*_{\hat{\beta}_1}|< t_{\alpha/2}(n-2)$の場合帰無仮説は棄却できない．
+$$ $|t^*_{\hat{\beta}_1}|\geq t_{\alpha/2}(n-2)$のとき，両側$100\alpha\%$の有意確率で帰無仮説を棄却し対立仮説を採用する．$|t^*_{\hat{\beta}_1}|< t_{\alpha/2}(n-2)$の場合帰無仮説は棄却できない．
 
 ## 検定の実際
 
@@ -176,20 +161,14 @@ data %>%
   with(lm(y ~ x)) %>% summary()
 ```
 
-データの分析結果から検定の仮定を再現する．結果出力における`x`の`Estimate`の値が$\hat{\beta}_1$に対応し，`Std. Error`の値が$\sqrt{\hat{\sigma}^2/S_{xx}}$に対応する．ゆえに，$t$値は
-$$
+データの分析結果から検定の仮定を再現する．結果出力における`x`の`Estimate`の値が$\hat{\beta}_1$に対応し，`Std. Error`の値が$\sqrt{\hat{\sigma}^2/S_{xx}}$に対応する．ゆえに，$t$値は $$
 \begin{align*}
-	t^*_{\hat{\beta}_1}=\frac{0.96227}{0.06952} = 13.842. 
+    t^*_{\hat{\beta}_1}=\frac{0.96227}{0.06952} = 13.842. 
 \end{align*}
-$$
-となる．データサイズは$n=100$なので，自由度98の$t$分布より，
-\begin{align*}
-	P(|T|>13.842) = 2* 10^{-16}
-\end{align*}
-が$p$値として得られる．
+$$ となる．データサイズは$n=100$なので，自由度98の$t$分布より， $$\begin{align*}
+    P(|T|>13.842) = 2* 10^{-16}
+\end{align*}$$ が$p$値として得られる．
 
 ## 本日の課題
 
 Rスクリプトを実行した結果をWordにコンパイルしたファイルをLUNA提出
-
-
