@@ -28,22 +28,26 @@ data %>%
 
 これを何回も何回も行う（ノート上は`gganimate`を使っているが，受講者諸君は手動で行うこと）．
 
-```{r, warning=FALSE, echo=FALSE}
+```{r, warning=FALSE, echo=FALSE, eval=FALSE}
 library(gganimate)
 
-tibble(
+p <- tibble(
     x = runif(100 * 100, 0, 50),
     y = rnorm(100 * 100, x + 10, 10),
     n = 1:100 %>% map(~rep(.x, 100)) %>% as_vector()
 ) %>%
   ggplot(aes(x=x, y=y)) +
   geom_point() +
-  geom_smooth(method="lm", formula = 'y ~ x', fill=NA, lwd=1.5, fullrange=TRUE) +
   geom_abline(slope= 1, intercept= 10, col = "red", lwd=1.5) +
+  geom_smooth(method="lm", formula = 'y ~ x', fill=NA, lwd=1.5, fullrange=TRUE) +
   xlim(0, 50) + ylim(0, 70) +
   transition_states(n)+
   theme_classic()
+
+animate(p, width = 600, height = 400, renderer = gifski_renderer("regression_animation.gif"))
 ```
+
+![](regression_animation.gif)
 
 試行によりデータが少しずつ変わり，回帰直線（青線）も少しずつ変わる．回帰直線$y=b_0 + b_1 x$の係数$b_1$は真の値である$1$からどれくらいずれているだろうか．サンプルサイズ100のランダムサンプリングを実施し回帰分析することを1000回繰り返して$b_1$をプロットする．
 
