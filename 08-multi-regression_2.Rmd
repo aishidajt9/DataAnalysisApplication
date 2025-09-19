@@ -51,8 +51,7 @@ $$
 
 $$\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\varepsilon},\quad \mathbf{\varepsilon}\sim N(\mathbf{0}, \sigma^2 \mathbf{I}_n)$$
 
-最小二乗法によって$\mathbf{\beta}$の推定量$\hat{\beta}$を求める．以下の残差平方和の最小化問題を解く．
-$$
+最小二乗法によって$\mathbf{\beta}$の推定量$\hat{\beta}$を求める．以下の残差平方和の最小化問題を解く． $$
 S_e = (\mathbf{y} - \mathbf{X}\hat{\beta})'(\mathbf{y} - \mathbf{X}\hat{\beta})
 $$
 
@@ -79,13 +78,9 @@ S_{2Y} \\
 \end{array} 
 \right] 
 \end{align}
-$$
-ただし，$V=S_{11}S_{22} - S_{12}^2$．
+$$ ただし，$V=S_{11}S_{22} - S_{12}^2$．
 
-$\mathbf{X}'\mathbf{X}$が正則である（逆行列が存在する）ことの条件は，$|\mathbf{X}'\mathbf{X}|=nV\neq 0$である．つまり，多重共線性が存在する場合，解は求められない．$\mathbf{X}'\mathbf{X}$が正則のとき，以下が成り立つ
-$$\mathbf{X}'\mathbf{X}\hat{\beta}=\mathbf{X}'\mathbf{y} \Longleftrightarrow \hat{\beta}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$
-つまり，以下を得る．
-$$
+$\mathbf{X}'\mathbf{X}$が正則である（逆行列が存在する）ことの条件は，$|\mathbf{X}'\mathbf{X}|=nV\neq 0$である．つまり，多重共線性が存在する場合，解は求められない．$\mathbf{X}'\mathbf{X}$が正則のとき，以下が成り立つ $$\mathbf{X}'\mathbf{X}\hat{\beta}=\mathbf{X}'\mathbf{y} \Longleftrightarrow \hat{\beta}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$ つまり，以下を得る． $$
 \hat{\beta} = \left[ 
 \begin{array}{c}
 \bar{Y} \\
@@ -97,21 +92,15 @@ $$
 
 ## 回帰係数の標本分布
 
-途中をすべて飛ばして結論だけを述べると，$\hat{\beta}$は以下のように分布する．
-$$
+途中をすべて飛ばして結論だけを述べると，$\hat{\beta}$は以下のように分布する． $$
 \hat{\beta} \sim N(\beta, \sigma^2 (\mathbf{X}'\mathbf{X})^{-1})
-$$
-誤差分散$\sigma^2$は未知なので，$S_e$に$\hat{\beta}$を代入したもので推測すると以下のようになる（ここでは$p = 2$）．
-$$
+$$ 誤差分散$\sigma^2$は未知なので，$S_e$に$\hat{\beta}$を代入したもので推測すると以下のようになる（ここでは$p = 2$）． $$
 \hat{\sigma}^2 = \frac{S_{YY} - \hat{\beta}_1 S_{1Y} - \hat{\beta}_2 S_{2Y}}{n - 1 - p}
 $$
 
-このとき，$H_0: \beta_k = 0\ (k = 1, 2)$の帰無仮説の下で以下が成立する．
-$$
+このとき，$H_0: \beta_k = 0\ (k = 1, 2)$の帰無仮説の下で以下が成立する． $$
 t_{\hat{\beta}_k} = \frac{\hat{\beta}_k}{\sqrt{\hat{\sigma}^2(\mathbf{X}'\mathbf{X})^{-1}_{(k + 1)(k + 1)}}} \sim t(n - 1 - p)
-$$
-具体的には，以下のようになる．
-$$
+$$ 具体的には，以下のようになる． $$
 \begin{align}
 t_{\hat{\beta}_1} &= \frac{S_{22}S_{1Y} - S_{12}S_{2Y}}{\sqrt{\hat{\sigma}^2 S_{22}V}} \sim t(n - 3) \\
 t_{\hat{\beta}_2} &= \frac{-S_{12}S_{1Y} + S_{11}S_{2Y}}{\sqrt{\hat{\sigma}^2 S_{11}V}} \sim t(n - 3) 
@@ -134,6 +123,7 @@ data %>% with(lm(y ~ x1 + x2)) %>% summary()
 ```
 
 行列演算で求める．
+
 ```{r}
 X <- matrix(c(rep(1, nrow(data)), data$x1 - mean(data$x1), data$x2 - mean(data$x2)), nrow = nrow(data), ncol = 3)
 y <- data$y
@@ -155,6 +145,7 @@ t_value[c(2, 3)]  # for beta_1, beta_2
 ```
 
 ここまでは説明の便宜上，独立変数を平均を用いて中心化していたが，中心化せずにそのままで$X$を構成しても回帰係数は求められる．この場合は$\beta_0$がダイレクトに得られる（理論的詳細は割愛）．
+
 ```{r}
 X <- matrix(c(rep(1, nrow(data)), data$x1, data$x2), nrow = nrow(data), ncol = 3)
 y <- data$y
@@ -202,7 +193,6 @@ t_value[3]^2
 ```
 
 ちなみに，`lm`のサマリーで報告されるF値は切片のみのヌル・モデル（$Y = \beta_0 + \varepsilon$）と当該モデルを比較したF値である．
-
 
 ## 本日の課題
 
