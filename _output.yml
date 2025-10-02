@@ -21,4 +21,5 @@ bookdown::pdf_book:
   latex_engine: xelatex
   citation_package: natbib
   keep_tex: yes
+  pandoc_args: ["--lua-filter=fix-math.lua"]
 bookdown::epub_book: default

@@ -33,3 +33,4 @@ Thumbs.db
 # IDE files
 .vscode/
 .idea/
+/.luarc.json

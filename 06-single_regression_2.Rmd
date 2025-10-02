@@ -47,7 +47,9 @@ p <- tibble(
 animate(p, width = 600, height = 400, renderer = gifski_renderer("regression_animation.gif"))
 ```
 
-![](regression_animation.gif)
+```{r echo=FALSE, eval=knitr::is_html_output()}
+knitr::include_graphics("regression_animation.gif")
+```
 
 試行によりデータが少しずつ変わり，回帰直線（青線）も少しずつ変わる．回帰直線$y=b_0 + b_1 x$の係数$b_1$は真の値である$1$からどれくらいずれているだろうか．サンプルサイズ100のランダムサンプリングを実施し回帰分析することを1000回繰り返して$b_1$をプロットする．
 
