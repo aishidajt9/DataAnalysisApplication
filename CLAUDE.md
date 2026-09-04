@@ -18,6 +18,23 @@
 bookdown::render_book()
 ```
 
+## ⛔ 分析実習は公開しない（厳守）
+
+`13-practice.Rmd`（分析実習）と `report_data.csv` は**公開サイトに決して公開しない**。
+2026-09-04に明示的な指示。センシティブな内容を含むため、実習資料はLUNA等で
+受講者に直接配布する。
+
+- `_bookdown.yml` の `rmd_files` に `13-practice.Rmd` を**追加しない**
+- 公開ディレクトリに `13-practice.html` / `report_data.csv` を置かない
+- 実習データをURL配布する案は却下済み（LUNA配布を維持）
+- push前に必ず確認する:
+  ```bash
+  git diff --cached --name-only | grep -E "13-practice|report_data"
+  ```
+- ソースファイル自体はこのリポジトリに残してよい（公開されるのは公開リポジトリ側のみ）
+
+**公開範囲はロジスティック回帰分析(2)（第13章）まで。**
+
 ## 📁 プロジェクト構造
 
 ### 重要なファイル
