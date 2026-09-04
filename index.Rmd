@@ -75,8 +75,8 @@ github-repo: aishidajt9/DataAnalysisApplication
 * Rスクリプトと関連ファイルはローカルで保存して実行する
 * ローカル上のフォルダ（ディレクトリ）やファイルにはディレクトリパス（番地）がある
   + 例：/Users/username/Documents/R/test.R (mac)
-  + 例：C:/R/test.R (win)
-* **【win】「ドキュメント」フォルダはOneDriveと同期されていることが多い．作業用フォルダはOneDriveの外に作ること**
+  + 例：C:/Users/username/Documents/R/test.R (win)
+* 【win】「ドキュメント」フォルダはOneDriveと同期されていることが多い．その場合パスは`C:/Users/username/OneDrive/ドキュメント/...`のようになる
 
 ### Terminal
 
@@ -106,7 +106,7 @@ github-repo: aishidajt9/DataAnalysisApplication
 * **【win】OneDriveのせいでインストールや実行がうまくいかない**
   + Windowsでは「ドキュメント」フォルダがOneDriveと同期されている場合があり，Rのパッケージがクラウド側に置かれて動作が不安定になる（インストールに失敗する，やたら遅い，など）
   + 対処：OneDriveの同期を一時停止してからインストールする（タスクバーのOneDriveアイコン → 歯車 → 「同期の一時停止」）
-  + あわせて，作業用フォルダはOneDriveの**外**（例：`C:/R`）に作ること
+  + それでも直らない場合は，パッケージの置き場所をOneDriveの外に移す方法がある．授業で相談すること
 * **`install.packages()`が失敗する・やたら時間がかかる**
   + ソースからのコンパイルが走っている可能性がある．以下のようにバイナリ版を指定すると回避できることが多い
 
