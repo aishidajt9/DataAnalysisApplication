@@ -23,7 +23,7 @@ bookdown::render_book()
 ### 重要なファイル
 - **章ファイル**: `index.Rmd`, `01-descritive.Rmd` ～ `11-logistic-regression_2.Rmd`
 - **設定ファイル**: `_bookdown.yml`, `_output.yml`
-- **TOC修正**: `fix_toc_direct.R` （自動実行）
+- **退避済み**: `archive/fix_toc_direct.R` （TOC修正ワークアラウンド、現在は不要）
 
 ### 無視すべきファイル
 - 生成HTMLファイル（`.html`）
@@ -38,72 +38,28 @@ bookdown::render_book()
 6-7. **単回帰分析** - 最小二乗法、決定係数
 8-10. **重回帰分析** - 偏回帰係数、多重共線性
 11-12. **ロジスティック回帰分析** - 一般化線形モデル
-13-14. **レポート分析実習**
+13-15. **分析実習** - Rによる回帰・ロジスティック回帰の実行
 
-## ⚙️ TOCナビゲーション設定（重要）
+## ⚙️ ビルド設定
 
-### 現在の動作原理
-bookdown 0.44 + pandoc 3.7 の互換性問題により、章4以降のTOCリンクが正しく生成されないため、HTML直接書き換えで修正しています。
-
-### 設定ファイル
-
-**`_output.yml`**:
+### `_output.yml`
 ```yaml
 bookdown::gitbook:
-  css: style.css
   split_by: rmd              # Rmdファイル名ベースでHTML生成
   toc_depth: 1               # 章レベル（レベル1）のみ表示
   config:
     toc:
       collapse: none         # 折りたたみ機能無効化
-      scroll_highlight: yes
       before: |
-        <li><a href="./">2025データ分析応用</a></li>
-      after: |
-        <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+        <li><a href="./">2026データ分析応用</a></li>
 ```
 
-**`_bookdown.yml`**:
-```yaml
-delete_merged_file: true
-language:
-  ui:
-    chapter_name: ["第", "章"]
-output_dir: "../aishidajt9.github.io/DataAnalysisApplication"
-rmd_files:
-  - "index.Rmd"
-  - "01-descritive.Rmd"
-  - "02-inference.Rmd"
-  - "03-linear_algebra_1.Rmd"
-  - "04-linear_algebra_2.Rmd"
-  - "05-single_regression_1.Rmd"
-  - "06-single_regression_2.Rmd"
-  - "07-multi-regression_1.Rmd"
-  - "08-multi-regression_2.Rmd"
-  - "09-multi-regression_3.Rmd"
-  - "10-logistic-regression_1.Rmd"
-  - "11-logistic-regression_2.Rmd"
-```
+### `_bookdown.yml`
+`output_dir: "../aishidajt9.github.io/DataAnalysisApplication"` （相対パス）
 
-### TOC修正スクリプト
-
-**`fix_toc_direct.R`** - data-level属性を使用した確実な修正:
-```r
-level_to_file <- list(
-  "1" = "index.html",
-  "2" = "01-descritive.html",
-  "3" = "02-inference.html", 
-  "4" = "03-linear_algebra_1.html",
-  "5" = "04-linear_algebra_2.html",
-  "6" = "05-single_regression_1.html",
-  "7" = "06-single_regression_2.html",
-  "8" = "07-multi-regression_1.html",
-  "9" = "08-multi-regression_2.html",
-  "10" = "09-multi-regression_3.html",
-  "11" = "10-logistic-regression_1.html",
-  "12" = "11-logistic-regression_2.html"
-)
-```
+**重要**: この相対パス指定のため、本リポジトリは `aishidajt9.github.io` と
+**同じ親ディレクトリ（`~/Projects/`）に置く必要がある**。
+Dropbox等に置くと出力先が解決できない。
 
 ## 🔧 開発環境
 
@@ -112,56 +68,48 @@ level_to_file <- list(
 install.packages(c("bookdown", "tidyverse", "gganimate", "rgl"))
 ```
 
-### Git設定
-- **ソースリポジトリ**: `aishidajt9/DataAnalysisApplication` (main)
-- **公開リポジトリ**: `aishidajt9/aishidajt9.github.io` (master)
+### ⚠️ rgl と XQuartz（重要）
+
+第7章（`07-multi-regression_1.Rmd`）の3D散布図は `rgl` を使う。
+`rgl` は **XQuartz** に依存し、未インストールだと以下のエラーで
+**knitがサイレントに停止する**（エラーメッセージが出ないまま終了コード0）:
+
+```
+unable to load shared object '.../rgl/libs/rgl.so':
+Library not loaded: /opt/X11/lib/libGLU.1.dylib
+```
+
+**対処**:
+```bash
+brew install --cask xquartz   # 要 sudo。インストール後に再ログインが必要
+```
+
+XQuartzを入れられない環境で暫定ビルドする場合は、
+`07-multi-regression_1.Rmd` の `plot3d`/`planes3d` を含むチャンクに
+`eval = FALSE` を付ける（ただし3D図は出力されない）。
+
+### 年度更新時の作業
+1. `index.Rmd` の `title:` を新年度に更新
+2. `_output.yml` の TOC `before:` のラベルを新年度に更新
+3. `index.Rmd` の「講義スケジュール」節をシラバスに合わせて更新
+4. 前年度分を残すため `git tag -a YYYY-final` を打ってpush
 
 ## 🔄 /publishコマンドの動作
 
-1. **レンダリング**: `bookdown::render_book()`
-2. **TOC修正**: `Rscript fix_toc_direct.R` （156個のリンク修正）
+1. **HTMLレンダリング**: `bookdown::render_book()`
+2. **PDFレンダリング**: `bookdown::render_book(output_format = 'bookdown::pdf_book')`
 3. **Git操作**: ソース→main、公開→master に自動プッシュ
 4. **結果**: https://aishidajt9.github.io/DataAnalysisApplication/ が更新
 
 ## 🚨 トラブルシューティング
 
+### knitが途中で止まる（エラー表示なし）
+→ ほぼ確実に `rgl`/XQuartz 問題。上記「rgl と XQuartz」を参照。
+
 ### 解決済みの問題
-✅ 左サイドバーTOCリンクが正常動作（全12章）  
-✅ 章レベルのみの一貫した表示（サブセクション非表示）  
-✅ 重複HTMLファイル問題解決  
-✅ bookdown 0.44 + pandoc 3.7互換性問題解決  
-
-## 🔮 将来のメンテナンス
-
-### TOC修正が不要になる条件
-bookdown/pandocの互換性問題が修正され、`split_by: rmd`で正しい`data-path`属性が生成されるようになった場合
-
-### 確認方法
-```bash
-# 1. TOC修正を無効にしてテスト
-Rscript -e "bookdown::render_book()"
-
-# 2. 結果を確認
-grep "data-path" "../aishidajt9.github.io/DataAnalysisApplication/index.html"
-```
-
-### 期待される修正後の状態
-- 章4以降も`data-path="index.html"`ではなく正しいHTMLファイル名
-- アンカーリンクではなく直接ファイルリンクが生成
-
-### 確認タイミング
-- bookdown/pandocパッケージ更新時
-- 新しいR環境セットアップ時
-
-### 不要になった場合の手順
-```bash
-# publishコマンドから "Rscript fix_toc_direct.R &&" を削除
-# fix_toc_direct.R をarchiveに移動
-mv fix_toc_direct.R archive/
-```
-
----
-
-## 📝 まとめ
-
-このプロジェクトは`/publish`コマンド一つで、レンダリング→TOC修正→Git操作→公開まで完全自動化されています。TOC修正は現在のbookdown/pandoc環境での一時的なワークアラウンドであり、将来的には不要になる可能性があります。
+✅ TOCリンク不正問題（bookdown 0.44 + pandoc 3.7）
+   → bookdown 0.48 + pandoc 3.10 で解消を確認済み（2026-09-04）。
+   ワークアラウンド `fix_toc_direct.R` は `archive/` に退避済み。
+   万一TOCリンクが再び壊れた場合は `archive/fix_toc_direct.R` を復帰させる。
+✅ `style.css` の参照切れ → `_output.yml` から削除
+✅ `edit:` のプレースホルダURL → 正しいリポジトリURLに修正

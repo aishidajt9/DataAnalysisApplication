@@ -34,3 +34,8 @@ Thumbs.db
 .vscode/
 .idea/
 /.luarc.json
+
+# Bookdown merged/knit intermediates
+DataAnalysisApplication.Rmd
+*.knit.md
+*.utf8.md
