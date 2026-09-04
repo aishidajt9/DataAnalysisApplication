@@ -91,10 +91,8 @@ github-repo: aishidajt9/DataAnalysisApplication
 
 * R: <https://cran.r-project.org/> （2026年9月現在の最新版はR 4.6.x）
   + win: "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
-  + mac: "Download R for macOS" → **自分のMacに合う方を選ぶ**
-    - Appleシリコン（M1〜M4など）は "arm64" と書かれた方
-    - Intel製は "x86_64" と書かれた方
-    - 見分け方：左上のアップルマーク →「このMacについて」→「チップ」欄を見る．**ここを間違えると動かない**
+  + mac: "Download R for macOS" → **"arm64" と書かれた方**（Appleシリコン用）
+    - 2020年以前の古いMacの場合のみ "x86_64" を選ぶ．左上のアップルマーク →「このMacについて」→「チップ」欄で確認できる
 * RStudio: <https://posit.co/download/rstudio-desktop/> → "DOWNLOAD RSTUDIO DESKTOP"
   + ページを開くと自分のOS用のインストーラが自動で選ばれる
 * 参考情報：
