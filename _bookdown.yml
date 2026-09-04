@@ -18,3 +18,4 @@ rmd_files:
   - "10-multi-regression_3.Rmd"
   - "11-logistic-regression_1.Rmd"
   - "12-logistic-regression_2.Rmd"
+  - "13-practice.Rmd"
