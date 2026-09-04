@@ -66,61 +66,6 @@ $$ 正規方程式からただちに以下を得る． $$
 a_0 = \bar{y},\quad b_0 = \bar{y} - b_1 \bar{x}, \quad b_1 = \frac{S_{xy}}{S_{xx}} = \frac{C_{xy}}{\hat{\sigma}_x^2}
 $$ 係数$b_0, b_1$は，データ$x_i, y_i$の平均，分散，共分散から得られることが分かった．
 
-## 行列による表現
-
-$$
-\begin{align*}
-  \mathbf{y}=\left[ 
-  \begin{array}{c}
-  y_1 \\
-  y_2 \\
-  \vdots \\
-  y_n \\
-  \end{array} 
-  \right],\ 
-  \mathbf{X}=\left[ 
-  \begin{array}{cc}
-  1 & x_1-\bar{x}\\
-  1 & x_2-\bar{x}\\
-  \vdots & \vdots \\
-  1 & x_n-\bar{x}\\
-  \end{array} 
-  \right],\ \mathbf{b}=\left[ 
-  \begin{array}{c}
-  a_0 \\
-  b_1 \\
-  \end{array} 
-  \right],\ \mathbf{e}=\left[ 
-  \begin{array}{c}
-  e_1 \\
-  e_2 \\
-  \vdots \\
-  e_n \\
-  \end{array} 
-  \right]
-\end{align*}
-$$ ただし，$a_0=b_0+b_1\bar{x}$である．回帰式は $$\mathbf{y} = \mathbf{X}\mathbf{b} + \mathbf{e}$$ 残差平方和は $$S_e=\mathbf{e}'\mathbf{e}$$ である（以下，ダッシュ記号$'$は転置を表す）．$\mathbf{X}$同士の積（グラム行列）とその逆行列，また$\mathbf{X}'\mathbf{y}$が以下のようになることに注意する． $$
-\begin{align}
-\mathbf{X}'\mathbf{X}=\left[ 
-\begin{array}{cc}
-n & 0 \\
-0 & S_{xx} \\
-\end{array} 
-\right],\ \  (\mathbf{X}'\mathbf{X})^{-1}=\left[ 
-\begin{array}{cc}
-1/n & 0 \\
-0 & 1/S_{xx} \\
-\end{array} 
-\right],\ \ 
-\mathbf{X}'\mathbf{y}=\left[ 
-\begin{array}{cc}
-\sum_{i=1}^n y_i \\
-S_{xy} \\
-\end{array} 
-\right] 
-\end{align}
-$$ ここから正規方程式と，$\mathbf{b}$の解が求まる．ただし，$\mathbf{X}'\mathbf{X}$が正則である（逆行列が存在する）ことが解の存在条件である． $$\mathbf{X}'\mathbf{X}\mathbf{b}=\mathbf{X}'\mathbf{y} \Longleftrightarrow \mathbf{b}=(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{y}$$
-
 ## 分散の分解
 
 残差平方和$S_e$に求められた$b_0, b_1$を代入してまとめる．$S_{yy}=\sum (y_i-\bar{y})^2, S_R=S_{xy}^2/S_{xx}$とおくと以下のようになる． $$
@@ -159,18 +104,6 @@ b1
 my - b1 * mx
 # R^2
 (sxy)^2 / (sxx * syy)
-```
-
-行列でもとめる．
-
-```{r}
-X <- matrix(c(rep(1, nrow(data)), data$x - mx), ncol = 2)
-y <- data$y
-b <- solve(t(X) %*% X) %*% t(X) %*% y
-# a0, b1
-b
-# b0
-b[1] - b[2] * mx
 ```
 
 ## 本日の課題
