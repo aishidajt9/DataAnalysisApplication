@@ -18,22 +18,40 @@
 bookdown::render_book()
 ```
 
-## ⛔ 分析実習は公開しない（厳守）
+## ⛔ 分析実習はbookdownで扱わない（厳守）
 
-`13-practice.Rmd`（分析実習）と `report_data.csv` は**公開サイトに決して公開しない**。
-2026-09-04に明示的な指示。センシティブな内容を含むため、実習資料はLUNA等で
-受講者に直接配布する。
+**分析実習は章にせず、去年（2025年度）と同じくLUNA配布で運用する。**
+2026-09-04に明示的な指示。センシティブな内容を含むため公開サイトには載せない。
 
-- `_bookdown.yml` の `rmd_files` に `13-practice.Rmd` を**追加しない**
-- 公開ディレクトリに `13-practice.html` / `report_data.csv` を置かない
-- 実習データをURL配布する案は却下済み（LUNA配布を維持）
-- push前に必ず確認する:
-  ```bash
-  git diff --cached --name-only | grep -E "13-practice|report_data"
-  ```
-- ソースファイル自体はこのリポジトリに残してよい（公開されるのは公開リポジトリ側のみ）
+- **本のRmdとして実習章を作らない。** 2026年に一度 `13-practice.Rmd` を作ったが撤回し、
+  `archive/13-practice.Rmd` に退避済み。復活させないこと
+- `_bookdown.yml` の `rmd_files` は `12-logistic-regression_2.Rmd` までとする
+- `report_data.csv` / `create_survey_data.R` はこのリポジトリで管理しない
+  （`.gitignore` 済み。実体はDropboxの `report/` にある）
+- 実習データをURL配布する案は却下済み
 
 **公開範囲はロジスティック回帰分析(2)（第13章）まで。**
+
+### 実習・最終リポートの運用（LUNA配布）
+
+実体は Dropbox 側で管理する:
+`2026年度授業関連/2026秋データ分析応用/report/`
+
+| ファイル | 用途 |
+|:---|:---|
+| `最終リポートについて.md` | 課題文。LUNAに掲示 |
+| `report_data.csv` | 実習データ（n=1000の合成データ）。LUNA配布 |
+| `report_template.R` | 学生に配る雛形。データ読込とシード設定まで |
+| `create_survey_data.R` | データ生成コード（`set.seed(123)`）。配布しない |
+| `analysis_example.R` | 教員用の分析例。配布しない |
+
+学生は `report_data.csv` と `report_template.R` をLUNAから取得し、
+同じフォルダに置いて作業する（`read_csv("report_data.csv")` の相対パス前提）。
+
+push前に混入がないか必ず確認する:
+```bash
+git diff --cached --name-only | grep -E "13-practice|report_data|create_survey"
+```
 
 ## 📁 プロジェクト構造
 
@@ -47,15 +65,16 @@ bookdown::render_book()
 - ビルド成果物（`_bookdown_files/`, `_main_files/`）
 - 一時ファイル（`.Rhistory`, `tmp.R`）
 
-## 📖 講義内容（全12章）
+## 📖 講義内容（公開資料は全13章）
 1. **イントロダクション** - R環境構築
 2. **記述統計の復習** - 基本統計量、相関係数
 3. **推測統計の復習** - 検定、区間推定
-4-5. **線形代数の基礎** - ベクトル、行列演算
-6-7. **単回帰分析** - 最小二乗法、決定係数
-8-10. **重回帰分析** - 偏回帰係数、多重共線性
-11-12. **ロジスティック回帰分析** - 一般化線形モデル
-13-15. **分析実習** - Rによる回帰・ロジスティック回帰の実行
+4-5. **線形代数の基礎** - ベクトル（内積・直交）、行列演算・逆行列
+6-8. **単回帰分析** - 最小二乗法、決定係数、推定・検定
+9-11. **重回帰分析** - 偏回帰係数、多重共線性、ダミー変数
+12-13. **ロジスティック回帰分析** - 一般化線形モデル
+
+第14-15回の分析実習は資料を作らず、LUNA配布で運用する（上記「⛔」参照）。
 
 ## ⚙️ ビルド設定
 
@@ -152,19 +171,6 @@ tidyverse必須のため、同じ手は使えない。Colabに逃がすのが早
 なお `rgl` のスナップショット（`rgl.snapshot()`）でPDFにも静止画を出す案は**使えない**。
 CLI経由の `Rscript` にはDISPLAYがなくX11に接続できず、null deviceにフォールバックして
 空の画像（311バイト）が出力される。XQuartzを入れてあってもGUIのRStudio以外では繋がらない。
-
-### 実習データの配布
-`report_data.csv`（n=1000の合成データ、`create_survey_data.R` の `set.seed(123)` で生成）は
-リポジトリに置き、公開ディレクトリにもコピーしてURLで配布する。
-
-```r
-read_csv("https://aishidajt9.github.io/DataAnalysisApplication/report_data.csv")
-```
-
-これによりローカルでの作業ディレクトリ設定が不要になり、**Google Colabでも同一コードで動く**
-（Colabに逃がした学生がファイルアップロードで詰まらない）。
-`bookdown::render_book()` はCSVを出力先へコピーしないので、**CSVを更新したら公開ディレクトリ側にも
-手でコピーすること**。
 
 ### 解決済みの問題
 ✅ TOCリンク不正問題（bookdown 0.44 + pandoc 3.7）

@@ -42,3 +42,7 @@ DataAnalysisApplication.Rmd
 
 # pandoc --extract-media が作る入れ子コピー
 DataAnalysisApplication_files/DataAnalysisApplication_files/
+
+# 実習データ（公開しない．LUNA配布．Dropboxのreport/で管理）
+report_data.csv
+create_survey_data.R
