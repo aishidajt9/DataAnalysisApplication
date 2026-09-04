@@ -39,3 +39,6 @@ Thumbs.db
 DataAnalysisApplication.Rmd
 *.knit.md
 *.utf8.md
+
+# pandoc --extract-media が作る入れ子コピー
+DataAnalysisApplication_files/DataAnalysisApplication_files/

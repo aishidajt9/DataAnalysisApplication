@@ -17,7 +17,7 @@ tibble(
   ) -> data
 ```
 
-```{r warning = FALSE, message = FALSE}
+```{r warning = FALSE, message = FALSE, eval = knitr::is_html_output()}
 # install.packages("rgl")
 # デバイスの環境によってはうまくインストールできないかもしれないが，その場合は以下は実行しなくてよい
 library(rgl)
@@ -26,6 +26,8 @@ options(rgl.printRglwidget = TRUE)
 plot3d(data$x1, data$x2, data$y, type = "p", xlab = "x1", ylab = "x2", zlab = "y")
 planes3d(1, 2, -1, 10, col = "blue", alpha = 0.3)
 ```
+
+（3D散布図はマウスでドラッグすると回転する．PDF版では表示されないので，HTML版で確認すること．）
 
 $x_1, x_2$を2つの独立変数（制約なく動く変数），$y$を従属変数（$x_1, x_2$の変化に伴って変化する変数）とすると，平面 $$
 \begin{align}
@@ -39,7 +41,7 @@ $$ を得る．つまり，$b_1$（$b_2$）は$x_2$（$x_1$）を一定とした
 
 下図は$x_2 = 20$と固定したときの$x_1$--$y$平面（灰色）上の回帰平面の断面を示す．
 
-```{r}
+```{r eval = knitr::is_html_output()}
 plot3d(data$x1, data$x2, data$y, type = "p", xlab = "x1", ylab = "x2", zlab = "y")
 planes3d(1, 2, -1, 10, col = "blue", alpha = 0.3)
 planes3d(0, 1, 0, -20, col='grey',alpha=1)

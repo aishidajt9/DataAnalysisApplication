@@ -125,6 +125,30 @@ tidyverse必須のため、同じ手は使えない。Colabに逃がすのが早
 ### knitが途中で止まる（エラー表示なし）
 → ほぼ確実に `rgl`/XQuartz 問題。上記「rgl と XQuartz」を参照。
 
+### PDFビルドがsegfault（exit 139）で落ちる
+`08-multi-regression_1.Rmd` の `rgl` チャンクが原因。`options(rgl.printRglwidget = TRUE)`
+はHTMLウィジェットを生成する設定なので、PDF出力時に呼ばれるとRごとクラッシュする。
+
+**対処済み**: 当該チャンクに `eval = knitr::is_html_output()` を付け、PDFでは
+3D図を出力しない（代わりに「HTML版で確認すること」の但し書きを表示）。
+
+なお `rgl` のスナップショット（`rgl.snapshot()`）でPDFにも静止画を出す案は**使えない**。
+CLI経由の `Rscript` にはDISPLAYがなくX11に接続できず、null deviceにフォールバックして
+空の画像（311バイト）が出力される。XQuartzを入れてあってもGUIのRStudio以外では繋がらない。
+
+### 実習データの配布
+`report_data.csv`（n=1000の合成データ、`create_survey_data.R` の `set.seed(123)` で生成）は
+リポジトリに置き、公開ディレクトリにもコピーしてURLで配布する。
+
+```r
+read_csv("https://aishidajt9.github.io/DataAnalysisApplication/report_data.csv")
+```
+
+これによりローカルでの作業ディレクトリ設定が不要になり、**Google Colabでも同一コードで動く**
+（Colabに逃がした学生がファイルアップロードで詰まらない）。
+`bookdown::render_book()` はCSVを出力先へコピーしないので、**CSVを更新したら公開ディレクトリ側にも
+手でコピーすること**。
+
 ### 解決済みの問題
 ✅ TOCリンク不正問題（bookdown 0.44 + pandoc 3.7）
    → bookdown 0.48 + pandoc 3.10 で解消を確認済み（2026-09-04）。

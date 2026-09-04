@@ -9,7 +9,9 @@
 
 ## データの準備
 
-`report_data.csv`を読み込み，他の受講者と重複しないランダムシードを選んで$n=500$を抽出する．シードは自分で決めた4桁の数字に変えること．
+実習データ`report_data.csv`は講義サイトに置いてある．以下のようにURLを直接指定して読み込む．ファイルをダウンロードしたり，作業ディレクトリを設定したりする必要はない．**Google Colabで作業している場合も，まったく同じコードで読み込める**．
+
+読み込んだうえで，他の受講者と重複しないランダムシードを選んで$n=500$を抽出する．シードは自分で決めた4桁の数字に変えること．
 
 ```{r eval = FALSE}
 library(tidyverse)
@@ -17,13 +19,20 @@ library(tidyverse)
 # 自分で設定した4桁の数字に変える
 set.seed(8931)
 
-read_csv("report_data.csv") %>%
+read_csv("https://aishidajt9.github.io/DataAnalysisApplication/report_data.csv") %>%
   mutate(
     gender = factor(gender, levels = c("男", "女")),
     education = factor(education, levels = c("中卒", "高卒", "大卒")),
     marital_status = factor(marital_status, levels = c("未婚", "既婚"))
   ) %>%
   slice_sample(n = 500) -> data
+```
+
+毎回URLを打つのが煩わしければ，一度読み込んだデータを手元に保存しておいてもよい．
+
+```{r eval = FALSE}
+# 手元に保存する場合（任意）
+write_csv(data, "report_data_500.csv")
 ```
 
 変数は以下のとおりである．
