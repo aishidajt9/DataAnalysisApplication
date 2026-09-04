@@ -75,7 +75,8 @@ github-repo: aishidajt9/DataAnalysisApplication
 * Rスクリプトと関連ファイルはローカルで保存して実行する
 * ローカル上のフォルダ（ディレクトリ）やファイルにはディレクトリパス（番地）がある
   + 例：/Users/username/Documents/R/test.R (mac)
-  + 例：C:/Users/username/Documents/R/test.R (win)
+  + 例：C:/R/test.R (win)
+* **【win】「ドキュメント」フォルダはOneDriveと同期されていることが多い．作業用フォルダはOneDriveの外に作ること**
 
 ### Terminal
 
@@ -86,16 +87,40 @@ github-repo: aishidajt9/DataAnalysisApplication
 
 ### RとRStudioのセットアップ
 
-* R: <https://www.r-project.org/> (-> download)
-* RStudio: <https://posit.co/products/open-source/rstudio/> (-> download rstudio desktop)
-* macの場合，パッケージ管理ソフトhomebrew (<https://brew.sh/>) を導入して，そこからインストールしてもよい
-  + winの場合，wingetという管理ソフトがあるっちゃある
+**Rとは別にRStudioが必要である．必ずRを先に，RStudioを後にインストールすること．**
+
+* R: <https://cran.r-project.org/> （2026年9月現在の最新版はR 4.6.x）
+  + win: "Download R for Windows" → "base" → "Download R-4.x.x for Windows"
+  + mac: "Download R for macOS" → **自分のMacに合う方を選ぶ**
+    - Appleシリコン（M1〜M4など）は "arm64" と書かれた方
+    - Intel製は "x86_64" と書かれた方
+    - 見分け方：左上のアップルマーク →「このMacについて」→「チップ」欄を見る．**ここを間違えると動かない**
+* RStudio: <https://posit.co/download/rstudio-desktop/> → "DOWNLOAD RSTUDIO DESKTOP"
+  + ページを開くと自分のOS用のインストーラが自動で選ばれる
 * 参考情報：
-  + 瓜生真也「R言語入門 (R-4.3.3 2024年4月版) / introduction to r」<https://speakerdeck.com/s_uryu/introduction-to-r>
+  + 瓜生真也「R言語入門 / introduction to r」<https://speakerdeck.com/s_uryu/introduction-to-r>
   + 宋財泫・矢内勇生「私たちのR——ベストプラクティスの探求」<https://www.jaysong.net/RBook/>
-* webベースでRを使ってみたい場合，現在では2つの選択肢をすすめます．ただしこの授業ではローカルへのインストールを前提とします．
-  + webR: <https://docs.r-wasm.org/webr/latest/>
-  + Google colab: <https://colab.research.google.com/> (ランタイムのタイプをRに変更)
+
+### うまくいかないときは
+
+**まずは自分で試す．どうしても解決しない場合は9月28日（第4回）の授業の冒頭で相談すること．そのままにして進めないこと．**
+
+* **【win】OneDriveのせいでインストールや実行がうまくいかない**
+  + Windowsでは「ドキュメント」フォルダがOneDriveと同期されている場合があり，Rのパッケージがクラウド側に置かれて動作が不安定になる（インストールに失敗する，やたら遅い，など）
+  + 対処：OneDriveの同期を一時停止してからインストールする（タスクバーのOneDriveアイコン → 歯車 → 「同期の一時停止」）
+  + あわせて，作業用フォルダはOneDriveの**外**（例：`C:/R`）に作ること
+* **`install.packages()`が失敗する・やたら時間がかかる**
+  + ソースからのコンパイルが走っている可能性がある．以下のようにバイナリ版を指定すると回避できることが多い
+
+``` {r eval=FALSE}
+install.packages("tidyverse", type = "binary")
+```
+
+* **日本語が文字化けする**
+  + File → Reopen with Encoding → UTF-8（それでもだめならCP932）を試す
+* **どうしてもローカルで動かない場合**
+  + 一時的な保険としてGoogle Colab <https://colab.research.google.com/> を使ってよい（ランタイムのタイプをRに変更する）
+  + ただしこの授業は**ローカルへのインストールを前提とする**．保険はあくまで一時的なものと考え，早めに相談すること
 
 ### RStudioの設定
 
@@ -144,8 +169,13 @@ hist(cars$speed)
 ### tidyverseのインストール
 
 * モダンRに必須のパッケージ群のバンドル．データ操作，ヴィジュアライゼーション
-* `install.packages(‘tidyverse‘)`
-  + macの場合Xcode，winの場合Rtoolsを別にインストールする必要があるかもしれない
+* コンソールで以下を実行する（**引用符は半角**）
+
+``` {r eval=FALSE}
+install.packages("tidyverse")
+```
+
+* 数分かかる．失敗する場合や極端に時間がかかる場合は「うまくいかないときは」を参照
 
 ``` {r eval=FALSE}
 library(tidyverse)
