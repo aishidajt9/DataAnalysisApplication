@@ -119,7 +119,6 @@ install.packages("tidyverse", type = "binary")
   + File → Reopen with Encoding → UTF-8（それでもだめならCP932）を試す
 * **どうしてもローカルで動かない場合**
   + 一時的な保険としてGoogle Colab <https://colab.research.google.com/> を使ってよい（「ランタイム」→「ランタイムのタイプを変更」→ R を選ぶ）
-  + 実習データはURLから直接読み込むので（第14章参照），Colabでもファイルのアップロードは不要である
   + Colabは`tidyverse`が導入済みだが，セッションが切れると追加でインストールしたものは消える．必要なら毎回`install.packages()`から実行すること
   + ただしこの授業は**ローカルへのインストールを前提とする**．保険はあくまで一時的なものと考え，早めに相談すること
 
