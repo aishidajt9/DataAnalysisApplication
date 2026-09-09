@@ -99,29 +99,6 @@ github-repo: aishidajt9/DataAnalysisApplication
   + 瓜生真也「R言語入門 / introduction to r」<https://speakerdeck.com/s_uryu/introduction-to-r>
   + 宋財泫・矢内勇生「私たちのR——ベストプラクティスの探求」<https://www.jaysong.net/RBook/>
 
-### うまくいかないときは
-
-**まずは自分で試す．どうしても解決しない場合は9月28日（第4回）の授業の冒頭で相談すること．そのままにして進めないこと．**
-
-* **`install.packages()`が失敗する・やたら時間がかかる**
-  + ソースからのコンパイルが走っている可能性がある．以下のようにバイナリ版を指定すると回避できることが多い
-
-``` {r eval=FALSE}
-install.packages("tidyverse", type = "binary")
-```
-
-* **【win】`install.packages()`が権限エラーなどで通らない**
-  + RStudioを右クリックして「管理者として実行」してから試す
-  + ウイルス対策ソフトが書き込みをブロックしていることがある．一時停止して試す
-  + 過去にも数名いた．解決しない場合は抱え込まずに相談すること
-
-* **日本語が文字化けする**
-  + File → Reopen with Encoding → UTF-8（それでもだめならCP932）を試す
-* **どうしてもローカルで動かない場合**
-  + 一時的な保険としてGoogle Colab <https://colab.research.google.com/> を使ってよい（「ランタイム」→「ランタイムのタイプを変更」→ R を選ぶ）
-  + Colabは`tidyverse`が導入済みだが，セッションが切れると追加でインストールしたものは消える．必要なら毎回`install.packages()`から実行すること
-  + ただしこの授業は**ローカルへのインストールを前提とする**．保険はあくまで一時的なものと考え，早めに相談すること
-
 ### RStudioの設定
 
 * デフォルト・エンコーディングをUTF-8にする
@@ -175,7 +152,7 @@ hist(cars$speed)
 install.packages("tidyverse")
 ```
 
-* 数分かかる．失敗する場合や極端に時間がかかる場合は「うまくいかないときは」を参照
+* 数分かかる．失敗する場合や極端に時間がかかる場合は次の「うまくいかないときは」を参照
 
 ``` {r eval=FALSE}
 library(tidyverse)
@@ -186,6 +163,29 @@ iris %>%
   geom_point() +
   geom_smooth(method="lm")
 ```
+
+### うまくいかないときは
+
+**まずは自分で試す．どうしても解決しない場合は9月28日（第4回）の授業の冒頭で相談すること．そのままにして進めないこと．**
+
+* **`install.packages()`が失敗する・やたら時間がかかる**
+  + ソースからのコンパイルが走っている可能性がある．以下のようにバイナリ版を指定すると回避できることが多い
+
+``` {r eval=FALSE}
+install.packages("tidyverse", type = "binary")
+```
+
+* **【win】`install.packages()`が権限エラーなどで通らない**
+  + RStudioを右クリックして「管理者として実行」してから試す
+  + ウイルス対策ソフトが書き込みをブロックしていることがある．一時停止して試す
+  + 過去にも数名いた．解決しない場合は抱え込まずに相談すること
+
+* **日本語が文字化けする**
+  + File → Reopen with Encoding → UTF-8（それでもだめならCP932）を試す
+* **どうしてもローカルで動かない場合**
+  + 一時的な保険としてGoogle Colab <https://colab.research.google.com/> を使ってよい（「ランタイム」→「ランタイムのタイプを変更」→ R を選ぶ）
+  + Colabは`tidyverse`が導入済みだが，セッションが切れると追加でインストールしたものは消える．必要なら毎回`install.packages()`から実行すること
+  + ただしこの授業は**ローカルへのインストールを前提とする**．保険はあくまで一時的なものと考え，早めに相談すること
 
 ## 本日の課題
 
