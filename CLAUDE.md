@@ -56,7 +56,7 @@ git diff --cached --name-only | grep -E "13-practice|report_data|create_survey"
 ## 📁 プロジェクト構造
 
 ### 重要なファイル
-- **章ファイル**: `index.Rmd`, `01-descritive.Rmd` ～ `11-logistic-regression_2.Rmd`
+- **章ファイル**: `index.Rmd`, `01-descritive.Rmd` ～ `12-logistic-regression_2.Rmd`
 - **設定ファイル**: `_bookdown.yml`, `_output.yml`
 - **退避済み**: `archive/fix_toc_direct.R` （TOC修正ワークアラウンド、現在は不要）
 
