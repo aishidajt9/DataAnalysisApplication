@@ -104,9 +104,27 @@ Dropbox等に置くと出力先が解決できない。
 install.packages(c("bookdown", "tidyverse", "gganimate", "rgl"))
 ```
 
+### ⚠️ Rを更新するとパッケージは引き継がれない（重要）
+
+R 4.5 → 4.6 のようにバージョンが上がるとライブラリパスが
+`/Library/Frameworks/R.framework/Versions/<新バージョン>/Resources/library` に
+切り替わり、**旧バージョンで入れたパッケージは一切引き継がれない**。
+
+2026-09-09に実際に `bookdown` と `rgl` が消えており、ビルドが
+`Error in loadNamespace(x) : there is no package called 'bookdown'` で
+失敗した（`tidyverse`, `knitr`, `rmarkdown` は残っていたので気づきにくい）。
+
+R更新後は最初に以下で確認する:
+```bash
+Rscript -e 'for (p in c("bookdown","tidyverse","rgl")) cat(sprintf("%-10s %s\n", p, requireNamespace(p, quietly=TRUE)))'
+```
+
+なお旧バージョンのライブラリ（`Versions/4.5-arm64/...`）は残っていても
+`Rscript` が撤去されているため、そちらでビルドする回避策は使えない。
+
 ### ⚠️ rgl と XQuartz（重要）
 
-第7章（`07-multi-regression_1.Rmd`）の3D散布図は `rgl` を使う。
+`08-multi-regression_1.Rmd` の3D散布図は `rgl` を使う。
 `rgl` は **XQuartz** に依存し、未インストールだと以下のエラーで
 **knitがサイレントに停止する**（エラーメッセージが出ないまま終了コード0）:
 
@@ -120,8 +138,24 @@ Library not loaded: /opt/X11/lib/libGLU.1.dylib
 brew install --cask xquartz   # 要 sudo。インストール後に再ログインが必要
 ```
 
+導入できたかは `ls /opt/X11/lib/libGLU.1.dylib` で確認する。
+`/opt/X11` ディレクトリだけあって `libGLU.1.dylib` がない場合は
+アンインストールの残骸なので、入れ直す必要がある。
+
+**`Rscript` 経由では、XQuartzを入れても `rgl` は必ず null device になる**
+（CLIに `DISPLAY` がないため）。以下は警告であってエラーではない:
+
+```
+RGL: unable to open X11 display
+'rgl.init' failed, will use the null device.
+```
+
+HTML出力は WebGLウィジェット（`rglwidget`）なので、null device のままで
+正常に生成される。上記の「サイレント停止」はパッケージのロード自体が
+失敗する場合の話であり、この警告とは別物なので混同しないこと。
+
 XQuartzを入れられない環境で暫定ビルドする場合は、
-`07-multi-regression_1.Rmd` の `plot3d`/`planes3d` を含むチャンクに
+`08-multi-regression_1.Rmd` の `plot3d`/`planes3d` を含むチャンクに
 `eval = FALSE` を付ける（ただし3D図は出力されない）。
 
 ### 年度更新時の作業
@@ -159,7 +193,13 @@ tidyverse必須のため、同じ手は使えない。Colabに逃がすのが早
 
 
 ### knitが途中で止まる（エラー表示なし）
-→ ほぼ確実に `rgl`/XQuartz 問題。上記「rgl と XQuartz」を参照。
+1. まず `bookdown` / `rgl` が入っているか確認する。Rを更新すると消える
+   （上記「Rを更新するとパッケージは引き継がれない」参照）
+2. パッケージが揃っているなら `rgl`/XQuartz 問題（上記「rgl と XQuartz」参照）
+
+なお `bookdown::render_book()` を `&&` で連結して実行すると、
+終了コードがラッパー側のものになって失敗を見落とすことがある。
+ログに残る `Output created:` の行で成否を判断すること。
 
 ### PDFビルドがsegfault（exit 139）で落ちる
 `08-multi-regression_1.Rmd` の `rgl` チャンクが原因。`options(rgl.printRglwidget = TRUE)`
