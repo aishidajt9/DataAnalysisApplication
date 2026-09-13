@@ -151,11 +151,11 @@ summary(lm_res)$adj.r.squared
 多重共線性の例．
 
 ```{r}
-data %>%
+data |>
   mutate(
     x3 = 3 * x1 + 1
-  ) %>%
-  with(lm(y ~ x1 + x3))
+  ) |>
+  lm(y ~ x1 + x3, data = _)
 ```
 
 `x3`は`NA`となって計算されない．

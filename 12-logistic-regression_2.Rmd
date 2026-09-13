@@ -39,7 +39,7 @@ tibble(
 	log_odds = log(odds)
 ) -> logit_data
 
-logit_data %>%
+logit_data |>
 	ggplot(aes(x = p, y = log_odds)) +
 	geom_line()
 ```
@@ -53,7 +53,7 @@ p = \frac{\exp(\eta)}{1+\exp(\eta)}=\frac{1}{1+\exp(-\eta)}
 $$
 この関数$p = \mathrm{logistic}(\eta)$は，ロジット関数の逆関数であり**ロジスティック関数**(logistic function)と呼ばれる．
 ```{r}
-logit_data %>%
+logit_data |>
 	ggplot(aes(x = log_odds, y = p)) +
 	geom_line()
 ```
@@ -117,10 +117,10 @@ summary(m1)
 
 以下の図はx1とyの散布図と，ロジスティック回帰で推定された$\hat{p}$である．
 ```{r}
-data %>%
+data |>
   mutate(
     p_hat = m1$fitted.values
-  ) %>%
+  ) |>
   ggplot() +
   geom_point(aes(x = x1, y = y)) +
   geom_line(aes(x = x1, y = p_hat))
@@ -137,10 +137,10 @@ summary(m2)
 この場合x1は0.3465で1%水準で有意である．x2をモデルに含めた方が効果を大きく推定する．さらにx2は3.8357，`exp(3.8357) = 46.32584`であり，x2 = 1であることがオッズを46倍大きくするという強い効果が示唆される（5%水準で有意）．
 
 ```{r}
-data %>%
+data |>
   mutate(
     p_hat = m2$fitted.values
-  ) %>%
+  ) |>
   ggplot() +
   geom_point(aes(x = x1, y = y, color = factor(x2))) +
   geom_line(aes(x = x1, y = p_hat, color = factor(x2)))

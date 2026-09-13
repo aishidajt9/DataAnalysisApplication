@@ -15,7 +15,7 @@ data <- tibble(
   y = rnorm(100, x + 10, 10)
   ) 
 
-data %>%
+data |>
   ggplot(aes(x=x, y=y)) +
   geom_point() +
   geom_abline(slope= 1, intercept= 10, col = "red", lwd=1.5) +
@@ -34,8 +34,8 @@ library(gganimate)
 p <- tibble(
     x = runif(100 * 100, 0, 50),
     y = rnorm(100 * 100, x + 10, 10),
-    n = 1:100 %>% map(~rep(.x, 100)) %>% as_vector()
-) %>%
+    n = 1:100 |> map(\(i) rep(i, 100)) |> list_c()
+) |>
   ggplot(aes(x=x, y=y)) +
   geom_point() +
   geom_abline(slope= 1, intercept= 10, col = "red", lwd=1.5) +
@@ -56,16 +56,15 @@ knitr::include_graphics("regression_animation.gif")
 ```{r message=FALSE}
 b1 <- c()
 for (i in 1:1000) {
-  tibble(
+  lm_res <- lm(y ~ x, data = tibble(
     x = runif(100, 0, 50),
     y = rnorm(100, x + 10, 10)
-  ) %>% 
-  with(lm(y ~ x)) -> lm_res
+  ))
   b1 <- append(b1, lm_res$coefficients["x"])
 }
 
-b1 %>% 
-  as_tibble_col(column_name = "b1") %>% 
+b1 |>
+  as_tibble_col(column_name = "b1") |>
   ggplot(aes(x = b1)) +
   geom_histogram(col = "black", fill ="grey30")
 ```
@@ -108,12 +107,14 @@ breaks <- c(10, 20, 30, 40, 50)
 norm <- tibble()
 for (t in breaks) {
   br = seq(qnorm(0.005,t + 10,10),qnorm(0.995,t + 10,10),length=200)
-  tibble(x=t-dnorm(br,t + 10,10)*100,
-         y=br,
-         b=t) %>% 
-    bind_rows(norm,.) -> norm
+  norm <- bind_rows(
+    norm,
+    tibble(x = t - dnorm(br, t + 10, 10) * 100,
+           y = br,
+           b = t)
+  )
 }
-dat %>% 
+dat |>
   ggplot(aes(x=x, y=y)) +
   geom_point() +
   geom_path(data=norm, aes(x, y, group=b), lwd=1.0, color = "red") +

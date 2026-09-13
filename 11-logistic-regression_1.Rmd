@@ -136,12 +136,12 @@ tibble(
 	logLik = log(Lik)
 ) -> lik_data
 
-lik_data %>%
+lik_data |>
 	ggplot(aes(x = p, y = Lik)) +
 	geom_line() + 
 	geom_vline(xintercept = 0.7, color = "red")
 
-lik_data %>%
+lik_data |>
 	ggplot(aes(x = p, y = logLik)) +
 	geom_line() +
 	geom_vline(xintercept = 0.7, color = "red")

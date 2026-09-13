@@ -119,7 +119,7 @@ tibble(
   y = rnorm(100, x1 + 2 * x2 + 10, 10)
   ) -> data
 
-data %>% with(lm(y ~ x1 + x2)) %>% summary()
+lm(y ~ x1 + x2, data = data) |> summary()
 ```
 
 行列演算で求める．
@@ -178,8 +178,8 @@ $$
 このような比較では，それぞれのモデルの最小残差平方和を用いてF値を計算し，それぞれのモデルが等しい，つまり$H_0: \beta_2 = 0$を帰無仮説としたときに，F値が理論的にF分布に従うことを利用して検定を行う．
 
 ```{r}
-data %>% with(lm(y ~ x1)) -> lm_m1
-data %>% with(lm(y ~ x1 + x2)) -> lm_m2
+lm_m1 <- lm(y ~ x1, data = data)
+lm_m2 <- lm(y ~ x1 + x2, data = data)
 anova(lm_m1, lm_m2)
 
 # F value

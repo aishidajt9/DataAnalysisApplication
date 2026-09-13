@@ -14,7 +14,7 @@ tibble(
   x = runif(100, 0, 50),
   y = rnorm(100, 2 * x + 10, 10),
   d = rep(0, 100)
-  ) %>%
+  ) |>
   bind_rows(
     tibble(
       x = runif(100, 0, 50),
@@ -23,7 +23,7 @@ tibble(
     )
   ) -> data
 
-data %>%
+data |>
   ggplot(aes(x=x, y=y)) +
   geom_point() +
   geom_smooth(method="lm", fill=NA, lwd=1.5, fullrange=TRUE) +
@@ -35,8 +35,7 @@ Y = \beta_0 + \beta_1 x + \varepsilon,\quad \varepsilon \sim N(0, \sigma^2)
 $$
 
 ```{r}
-data %>%
-  with(lm(y ~ x)) %>%
+lm(y ~ x, data = data) |>
   summary()
 ```
 
@@ -68,10 +67,9 @@ $$ ここで，$d=0,1$を代入すると以下のようになる（誤差項は�
 $$ つまり，$\beta_0$は$d = 0$のカテゴリー（たとえば男性）に対応した切片，$\beta_2$は$d = 1$のカテゴリー（たとえば女性）に対応した切片の増分を示す．つまり，$\beta_2$は$d = 0$の基準カテゴリーと比べて，$d = 1$の時の切片がどれくらい大きいか（小さいか）を示している．このモデルでは傾きはカテゴリー共通で切片のみが変わることに注意せよ．
 
 ```{r}
-data %>%
-  with(lm(y ~ x + d)) -> lm_dummy
+lm_dummy <- lm(y ~ x + d, data = data)
 b_d <- lm_dummy$coefficients
-lm_dummy %>% summary()
+lm_dummy |> summary()
 ```
 
 $$
@@ -79,7 +77,7 @@ $$
 $$ ここから，$d=0$の時の切片は20.45，$d=1$の時の切片は$20.45 + 17.97 = 38.42$と推測されていることがわかる．
 
 ```{r}
-data %>%
+data |>
   ggplot(aes(x=x, y=y, color=factor(d))) +
   geom_point() +
   geom_function(fun = function(x) b_d[1] + b_d[2] * x,
@@ -105,10 +103,9 @@ $$ $\beta_2$による切片の増分の表現に加えて，以下が示され�
 Rの`lm`では，交互作用モデルは`y ~ x * d`もしくは`y ~ x + d + x:d`と表現する．
 
 ```{r}
-data %>%
-  with(lm(y ~ x * d)) -> lm_intsec
+lm_intsec <- lm(y ~ x * d, data = data)
 b_i <- lm_intsec$coefficients
-lm_intsec %>% summary()
+lm_intsec |> summary()
 ```
 
 $$
@@ -125,7 +122,7 @@ $$
 もとの理論的構造をほぼ推定できている．また自由度調整済み決定係数も上昇している．
 
 ```{r}
-data %>%
+data |>
   ggplot(aes(x=x, y=y, color=factor(d))) +
   geom_point() +
   geom_function(fun = function(x) b_i[1] + b_i[2] * x,
@@ -138,7 +135,7 @@ data %>%
 上のグラフは以下のように`ggplot`の`geom_smooth`でも直接書ける．
 
 ```{r eval=FALSE}
-data %>%
+data |>
   ggplot(aes(x=x, y=y, color=factor(d))) +
   geom_point() +
   geom_smooth(method="lm", fill=NA, lwd=1.5, fullrange=TRUE) +

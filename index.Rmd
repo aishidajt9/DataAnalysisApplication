@@ -157,8 +157,8 @@ install.packages("tidyverse")
 ``` {r eval=FALSE}
 library(tidyverse)
 
-iris %>% 
-  select(Sepal.Length, Sepal.Width, Species) %>% 
+iris |>
+  select(Sepal.Length, Sepal.Width, Species) |>
   ggplot(aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
   geom_point() +
   geom_smooth(method="lm")

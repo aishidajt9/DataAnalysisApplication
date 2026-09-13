@@ -71,8 +71,7 @@ $$ $|t^*_{\hat{\beta}_1}|\geq t_{\alpha/2}(n-2)$のとき，両側$100\alpha\%$�
 実際にR上でどのように検定結果が報告されているか確認しよう．
 
 ```{r}
-data %>%
-  with(lm(y ~ x)) %>% summary()
+lm(y ~ x, data = data) |> summary()
 ```
 
 データの分析結果から検定の仮定を再現する．結果出力における`x`の`Estimate`の値が$\hat{\beta}_1$に対応し，`Std. Error`の値が$\sqrt{\hat{\sigma}^2/S_{xx}}$に対応する．ゆえに，$t$値は $$

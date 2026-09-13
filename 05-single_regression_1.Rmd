@@ -15,7 +15,7 @@ data <- tibble(
   y=rnorm(100, x + 10, 10)
 )
 
-data %>%
+data |>
   ggplot(aes(x=x, y=y)) +
   geom_point() +
   geom_smooth(method="lm", fill=NA, lwd=1.5, fullrange=TRUE)+
