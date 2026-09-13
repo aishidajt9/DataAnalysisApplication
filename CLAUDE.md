@@ -171,6 +171,49 @@ XQuartzを入れられない環境で暫定ビルドする場合は、
 3. **Git操作**: ソース→main、公開→master に自動プッシュ
 4. **結果**: https://aishidajt9.github.io/DataAnalysisApplication/ が更新
 
+### ⚠️ 公開前に必ず両リポジトリを fetch する（重要）
+
+`/publish` の手順には `git pull` が含まれない。別マシンや別セッションから
+更新が入っていると、**遠隔の変更を消してしまう**。
+
+2026-09-13に実際に両方とも遅れていた:
+
+| リポジトリ | 遠隔にあった変更 |
+|:---|:---|
+| ソース (main) | CLAUDE.md追記、「うまくいかないときは」節の移動、「休講」→「授業実施日ではない」 |
+| サイト (master) | 旧 `_main*` 成果物の削除（約3,700行）、`works.html` の論文追加 |
+
+とくにサイト側は**この科目と無関係な `works.html` まで巻き戻る**ので影響が大きい。
+
+作業開始時に以下を実行する:
+```bash
+git fetch origin && git -C ../aishidajt9.github.io fetch origin
+git log --oneline HEAD..origin/main                              # ソース側
+git -C ../aishidajt9.github.io log --oneline HEAD..origin/master # サイト側
+```
+
+遅れていた場合は `git rebase origin/<branch>` で追いつく。`.Rmd` は
+テキストなので大抵は自動マージされる。**コンフリクトするのは生成物
+（`.html`, `.pdf`, 図の `.png`）がほとんどだが、これらは手で解決しない。**
+遠隔の状態に合わせてから**ビルドし直す**のが正しい:
+
+```bash
+git -C ../aishidajt9.github.io rebase --abort
+git -C ../aishidajt9.github.io reset --hard origin/master
+# そのうえで /publish をやり直す
+```
+
+**`--force` で通してはいけない。** 上表の変更が消える。
+
+### 公開後の確認
+
+GitHub Pages の反映には**push後2〜3分かかる**。すぐに見ても古いままなので、
+反映を確認してから完了とすること:
+
+```bash
+curl -s "https://aishidajt9.github.io/DataAnalysisApplication/09-multi-regression_2.html?cb=$RANDOM" | grep -c "data = data"
+```
+
 ## 🚨 トラブルシューティング
 
 ### 受講者のインストール問題（既知・未解決）
