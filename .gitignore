@@ -40,8 +40,9 @@ DataAnalysisApplication.Rmd
 *.knit.md
 *.utf8.md
 
-# pandoc --extract-media が作る入れ子コピー
-DataAnalysisApplication_files/DataAnalysisApplication_files/
+# ビルド成果物（図）．公開はサイト側リポジトリの方を使うため追跡しない
+# figure-html はサイト側に同じものが出力され，figure-latex はPDFに埋め込まれる
+DataAnalysisApplication_files/
 
 # 実習データ（公開しない．LUNA配布．Dropboxのreport/で管理）
 report_data.csv
