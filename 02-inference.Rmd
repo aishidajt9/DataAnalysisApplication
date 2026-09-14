@@ -55,6 +55,7 @@
 -   標準正規分布$N(0,1)$から，サイズ$n$の標本を抽出し平均を取る操作を1000回繰り返す．その$t$値の分布と標準正規分布(赤)と$t$分布$t(n-1)$(青)．正規分布以外の分布からの標本抽出でも，標本サイズが十分に大きくなると，$t$分布は標準正規分布に近づくことを確認できる．
 
 ```{r}
+set.seed(8931)
 n <- 100
 repdata <- replicate(10000, rnorm(n))
 t <-apply(repdata, 2, function(x) {
@@ -154,6 +155,8 @@ curve(dt(x,n-1),-4,4,col="blue",lwd=2,add=TRUE)
 ```{r message=FALSE}
 library(tidyverse)
 
+set.seed(8931)
+
 # m: 母平均, s: 母標準偏差, n: 標本サイズ, r: 試行回数
 CItest<-function(m,s,n,r) {
   rdata<-replicate(r,{
@@ -224,6 +227,7 @@ CItest(160,20,10,100)
 -   Rを用いた区間推定と検定の例（$H_0: \mu = 160$）
 
 ```{r}
+set.seed(8931)
 n <- 10
 x <- rnorm(n, 165, 10)
 t.test(x, mu = 160)
