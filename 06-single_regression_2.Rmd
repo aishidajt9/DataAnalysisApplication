@@ -86,7 +86,7 @@ sd(b1)
 
 母集団からのランダムサンプリングによって，$n$個の独立な確率変数$Y_1,Y_2,\ldots,Y_n$が得られる．確率変数$Y_1,Y_2,\ldots,Y_n$は， $$
 \begin{align}
-Y_i=\beta_0+\beta_1 x_i,\qquad Y_i \sim N(\beta_0+\beta_1 x_i,\sigma^2)
+Y_i \sim N(\beta_0+\beta_1 x_i,\sigma^2)\quad (i=1,\ldots,n,\ \text{独立})
 \end{align}
 $$ もしくは，誤差確率変数$\varepsilon_i$を導入して別の表現で書けば $$
 \begin{align}
